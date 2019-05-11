@@ -6,11 +6,14 @@ using Unity.Jobs;
 
 public class ServerBehaviour : MonoBehaviour
 {
+    public static ServerBehaviour Instance;
+
     public UdpNetworkDriver m_ServerDriver;
     private NativeList<NetworkConnection> m_Connections;
 
     // Start by creating a driver for the client and an address for the server.
     void Start() {
+        Instance = this;
 
         ushort serverPort = 9000;
         ushort newPort = 0;
@@ -46,6 +49,11 @@ public class ServerBehaviour : MonoBehaviour
         NetworkConnection c;
         while ((c = m_ServerDriver.Accept()) != default(NetworkConnection)) {
             m_Connections.Add(c);
+
+            GameManager.myId++;
+            DataStreamWriter writer = Communication.Send(SendType.AssignId, GameManager.myId);
+            c.Send(m_ServerDriver, writer);
+
             Debug.Log("Accepted a connection");
         }
 
@@ -57,15 +65,13 @@ public class ServerBehaviour : MonoBehaviour
             while ((cmd = m_ServerDriver.PopEventForConnection(m_Connections[i], out stream)) !=
                 NetworkEvent.Type.Empty) {
                 if (cmd == NetworkEvent.Type.Data) {
-                    var readerCtx = default(DataStreamReader.Context);
-                    uint number = stream.ReadUInt(ref readerCtx);
-                    Debug.Log("Got " + number + " from the Client adding + 2 to it.");
-                    number += 2;
+                    Communication.Receive(stream);
 
+                    /*
                     using (var writer = new DataStreamWriter(4, Allocator.Temp)) {
                         writer.Write(number);
                         m_ServerDriver.Send(NetworkPipeline.Null, m_Connections[i], writer);
-                    }
+                    }*/
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect) {
                     Debug.Log("Client disconnected from server");
@@ -73,9 +79,24 @@ public class ServerBehaviour : MonoBehaviour
                 }
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.F))
+            SendInfo(SendType.CarPosition, transform.position);
     }
 
-        public void OnDestroy() {
+    public static void SendInfo(SendType sendType, object value) {
+        DataStreamWriter writer = Communication.Send(sendType, value);
+
+        for (int i = 0; i < Instance.m_Connections.Length; i++) {
+            if (!Instance.m_Connections[i].IsCreated)
+                continue;
+            Instance.m_Connections[i].Send(Instance.m_ServerDriver, writer);
+        }
+
+        writer.Dispose();
+    }
+
+    public void OnDestroy() {
         m_ServerDriver.Dispose();
         m_Connections.Dispose();
     }

@@ -7,6 +7,8 @@ using System.Net;
 
 public class ClientBehaviour : MonoBehaviour {
 
+    public static ClientBehaviour Instance;
+
     public UdpNetworkDriver m_ClientDriver;
     private NativeArray<NetworkConnection> m_clientToServerConnection;
     private NetworkEndPoint ServerEndPoint;
@@ -14,6 +16,8 @@ public class ClientBehaviour : MonoBehaviour {
     public bool Done;
 
     void Start() {
+        Instance = this;
+
         m_ClientDriver = new UdpNetworkDriver(new INetworkParameter[0]);
         m_clientToServerConnection = new NativeArray<NetworkConnection>(1, Allocator.Persistent);
         ServerEndPoint = default(NetworkEndPoint);
@@ -54,20 +58,24 @@ public class ClientBehaviour : MonoBehaviour {
             NetworkEvent.Type.Empty) {
             if (cmd == NetworkEvent.Type.Connect) {
                 Debug.Log("We are now connected to the server");
-
-                var value = 1;
+                /*
+                float value = 1.5f;
                 using (var writer = new DataStreamWriter(4, Allocator.Temp)) {
                     writer.Write(value);
                     m_clientToServerConnection[0].Send(m_ClientDriver, writer);
-                }
+                }*/
             }
             else if (cmd == NetworkEvent.Type.Data) {
+                Communication.Receive(stream);
+
+                /*
                 var readerCtx = default(DataStreamReader.Context);
                 uint value = stream.ReadUInt(ref readerCtx);
                 Debug.Log("Got the value = " + value + " back from the server");
-                Done = true;
-                m_clientToServerConnection[0].Disconnect(m_ClientDriver);
-                m_clientToServerConnection[0] = default(NetworkConnection);
+                */
+                //Done = true;
+                //m_clientToServerConnection[0].Disconnect(m_ClientDriver);
+                //m_clientToServerConnection[0] = default(NetworkConnection);
             }
             else if (cmd == NetworkEvent.Type.Disconnect) {
                 Debug.Log("Client got disconnected from server");
@@ -75,4 +83,14 @@ public class ClientBehaviour : MonoBehaviour {
             }
         }
     }
+
+    public static void SendInfo(SendType sendType, object value) {
+        DataStreamWriter writer = Communication.Send(sendType, value);
+        
+        Instance.m_clientToServerConnection[0].Send(Instance.m_ClientDriver, writer);
+
+        writer.Dispose();
+    }
+
+
 }
