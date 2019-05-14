@@ -65,7 +65,7 @@ public class ServerBehaviour : MonoBehaviour
             while ((cmd = m_ServerDriver.PopEventForConnection(m_Connections[i], out stream)) !=
                 NetworkEvent.Type.Empty) {
                 if (cmd == NetworkEvent.Type.Data) {
-                    Communication.Receive(stream);
+                    Communication.Receive(stream, i);
 
                     /*
                     using (var writer = new DataStreamWriter(4, Allocator.Temp)) {
@@ -79,9 +79,6 @@ public class ServerBehaviour : MonoBehaviour
                 }
             }
         }
-
-        if(Input.GetKeyDown(KeyCode.F))
-            SendInfo(SendType.CarPosition, transform.position);
     }
 
     public static void SendInfo(SendType sendType, object value) {

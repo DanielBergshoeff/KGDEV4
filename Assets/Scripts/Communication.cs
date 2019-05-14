@@ -11,11 +11,14 @@ public static class Communication {
     public static readonly Dictionary<SendType, VarType> SendToVar = new Dictionary<SendType, VarType> {
         //Server to client
         { SendType.CarPosition, VarType.Vector3 },
+        { SendType.CarRotation, VarType.Quaternion },
         { SendType.TimeLeft, VarType.Float },
         { SendType.AssignId, VarType.Int },
 
         //Client to Server
-        { SendType.Forward, VarType.Int }
+        { SendType.Forward, VarType.Bool },
+        { SendType.TurnLeft, VarType.Bool },
+        { SendType.TurnRight, VarType.Bool }
     };
 
     public static DataStreamWriter Send(SendType sendType, object value) {
@@ -26,12 +29,16 @@ public static class Communication {
                 return SendVector3(sendType, (Vector3)value);
             case VarType.Int:
                 return SendInt(sendType, (int)value);
+            case VarType.Bool:
+                return SendBool(sendType, (bool)value);
+            case VarType.Quaternion:
+                return SendQuaternion(sendType, (Quaternion)value);
 
         }
         return default(DataStreamWriter);
     }
 
-    public static DataStreamWriter SendVector3(SendType sendType, Vector3 vector) {
+    private static DataStreamWriter SendVector3(SendType sendType, Vector3 vector) {
 
         var writer = new DataStreamWriter(16, Allocator.Temp);
         writer.Write((uint)sendType);
@@ -42,7 +49,18 @@ public static class Communication {
         return writer;
     }
 
-    public static DataStreamWriter SendFloat (SendType sendType, float f) {
+    private static DataStreamWriter SendQuaternion(SendType sendType, Quaternion quaternion) {
+        var writer = new DataStreamWriter(20, Allocator.Temp);
+        writer.Write((uint)sendType);
+        writer.Write(quaternion.x);
+        writer.Write(quaternion.y);
+        writer.Write(quaternion.z);
+        writer.Write(quaternion.w);
+
+        return writer;
+    }
+
+    private static DataStreamWriter SendFloat (SendType sendType, float f) {
 
         var writer = new DataStreamWriter(8, Allocator.Temp);
         writer.Write((uint)sendType);
@@ -51,7 +69,7 @@ public static class Communication {
         return writer;
     }
 
-    public static DataStreamWriter SendInt(SendType sendType, int i) {
+    private static DataStreamWriter SendInt(SendType sendType, int i) {
 
         var writer = new DataStreamWriter(8, Allocator.Temp);
         writer.Write((uint)sendType);
@@ -60,7 +78,16 @@ public static class Communication {
         return writer;
     }
 
-    public static void Receive(DataStreamReader stream) {
+    private static DataStreamWriter SendBool(SendType sendType, bool b) {
+        var writer = new DataStreamWriter(1, Allocator.Temp);
+        writer.Write((uint)sendType);
+        byte x = b ? (byte)1 : (byte)0;
+        writer.Write(x);
+
+        return writer;
+    }
+
+    public static void Receive(DataStreamReader stream, int connection) {
         var readerCtx = default(DataStreamReader.Context);
         SendType sendType = (SendType)stream.ReadUInt(ref readerCtx);
         object o = null;
@@ -74,11 +101,20 @@ public static class Communication {
             case VarType.Int:
                 o = stream.ReadInt(ref readerCtx);
                 break;
+            case VarType.Bool:
+                byte b = stream.ReadByte(ref readerCtx);
+                o = false;
+                if (b == 1)
+                    o = true;
+                break;
+            case VarType.Quaternion:
+                o = new Quaternion(stream.ReadFloat(ref readerCtx), stream.ReadFloat(ref readerCtx), stream.ReadFloat(ref readerCtx), stream.ReadFloat(ref readerCtx));
+                break;
         }
 
         if(o != null)
-            receivedObject.Invoke(sendType, o);
+            receivedObject.Invoke(sendType, o, connection);
     }
 }
 
-public class UnityObjectEvent : UnityEvent<SendType, object> { }
+public class UnityObjectEvent : UnityEvent<SendType, object, int> { }

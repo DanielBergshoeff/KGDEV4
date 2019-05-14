@@ -66,7 +66,7 @@ public class ClientBehaviour : MonoBehaviour {
                 }*/
             }
             else if (cmd == NetworkEvent.Type.Data) {
-                Communication.Receive(stream);
+                Communication.Receive(stream, 0);
 
                 /*
                 var readerCtx = default(DataStreamReader.Context);

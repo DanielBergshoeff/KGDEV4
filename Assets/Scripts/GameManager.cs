@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
 
         carBehaviour = Car.GetComponent<CarBehaviour>();
 
-        playerIdTurn = 1;
+        playerIdTurn = 0;
 
         isServer = localIsServer;
     }
@@ -45,17 +45,33 @@ public class GameManager : MonoBehaviour
 
     private void ClientBehaviourMethod() {
         if (Input.GetKey(KeyCode.W)) {
-            ClientBehaviour.SendInfo(SendType.Forward, myId);
+            ClientBehaviour.SendInfo(SendType.Forward, true);
+        }
+        if (Input.GetKey(KeyCode.A)) {
+            ClientBehaviour.SendInfo(SendType.TurnLeft, true);
+        }
+        if (Input.GetKey(KeyCode.D)) {
+            ClientBehaviour.SendInfo(SendType.TurnRight, true);
         }
     }
 
-    private void Receive(SendType sendType, object o) {
+    private void Receive(SendType sendType, object o, int connection) {
         if(isServer) { //ON SERVER
-            switch (sendType) {
-                case SendType.Forward:
-                    if ((int)o == playerIdTurn)
+            if (connection == playerIdTurn) { //If the input is coming from the player whose turn it is to drive
+                switch (sendType) {
+                    case SendType.Forward:
                         carBehaviour.Accelerate();
-                    break;
+                        break;
+                    case SendType.TurnLeft:
+                        carBehaviour.TurnLeft();
+                        break;
+                    case SendType.TurnRight:
+                        carBehaviour.TurnRight();
+                        break;
+                }
+            }
+            else { //If the input is coming from the player whose turn it is to throw eggs
+
             }
         }
         else { //ON CLIENT
@@ -65,6 +81,9 @@ public class GameManager : MonoBehaviour
                     break;
                 case SendType.AssignId:
                     myId = (int)o;
+                    break;
+                case SendType.CarRotation:
+                    Car.transform.rotation = (Quaternion)o;
                     break;
             }
         }
