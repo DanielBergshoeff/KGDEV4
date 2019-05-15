@@ -21,9 +21,12 @@ public class GameManager : MonoBehaviour
         Communication.receivedObject = new UnityObjectEvent();
         Communication.receivedObject.AddListener(Receive);
 
+        Communication.receivedObjects = new UnityObjectsEvent();
+        Communication.receivedObjects.AddListener(Receive);
+
         carBehaviour = Car.GetComponent<CarBehaviour>();
 
-        playerIdTurn = 0;
+        playerIdTurn = 1;
 
         isServer = localIsServer;
     }
@@ -45,7 +48,10 @@ public class GameManager : MonoBehaviour
 
     private void ClientBehaviourMethod() {
         if (Input.GetKey(KeyCode.W)) {
-            ClientBehaviour.SendInfo(SendType.Forward, true);
+            ClientBehaviour.SendInfo(SendType.MoveForward, true);
+        }
+        if (Input.GetKey(KeyCode.S)) {
+            ClientBehaviour.SendInfo(SendType.MoveBack, true);
         }
         if (Input.GetKey(KeyCode.A)) {
             ClientBehaviour.SendInfo(SendType.TurnLeft, true);
@@ -53,14 +59,23 @@ public class GameManager : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) {
             ClientBehaviour.SendInfo(SendType.TurnRight, true);
         }
+        if (Input.GetMouseButtonDown(0)) {
+            ClientBehaviour.SendInfo(SendType.EggThrow, new Vector3(1f, 0.2f, 0f), 10.0f);
+        }
+        if (Input.GetKeyDown(KeyCode.T)) {
+            ClientBehaviour.SendInfo(SendType.Text, "This is a text test!");
+        }
     }
 
     private void Receive(SendType sendType, object o, int connection) {
         if(isServer) { //ON SERVER
             if (connection == playerIdTurn) { //If the input is coming from the player whose turn it is to drive
                 switch (sendType) {
-                    case SendType.Forward:
+                    case SendType.MoveForward:
                         carBehaviour.Accelerate();
+                        break;
+                    case SendType.MoveBack:
+                        carBehaviour.Decelerate();
                         break;
                     case SendType.TurnLeft:
                         carBehaviour.TurnLeft();
@@ -71,7 +86,11 @@ public class GameManager : MonoBehaviour
                 }
             }
             else { //If the input is coming from the player whose turn it is to throw eggs
-
+                switch (sendType) {
+                    case SendType.Text:
+                        Debug.Log((string)o);
+                        break;
+                }
             }
         }
         else { //ON CLIENT
@@ -86,6 +105,27 @@ public class GameManager : MonoBehaviour
                     Car.transform.rotation = (Quaternion)o;
                     break;
             }
+        }
+    }
+
+    private void Receive(SendType sendType, object[] values, int connection) {
+        if(isServer) { //ON SERVER
+            if (connection == playerIdTurn) { //If the input is coming from the player whose turn it is to drive
+                
+            }
+            else {//If the input is coming from the player whose turn it is to throw eggs
+                switch (sendType) {
+                    case SendType.EggThrow:
+                        Vector3 eggDirection = (Vector3)values[0];
+                        float eggForce = (float)values[1];
+                        Debug.Log(eggDirection);
+                        Debug.Log(eggForce);
+                        break;
+                }
+            }
+        }
+        else { //ON CLIENT
+
         }
     }
 }

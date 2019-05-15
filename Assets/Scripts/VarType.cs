@@ -8,7 +8,8 @@ public enum VarType
     Vector3,
     Int,
     Bool,
-    Quaternion
+    Quaternion,
+    String
 }
 
 public enum SendType {
@@ -18,8 +19,15 @@ public enum SendType {
     CarRotation,
     TimeLeft,
 
-    //Client to Server
-    Forward,
+    //Client 1 to Server
+    MoveForward,
+    MoveBack,
     TurnLeft,
-    TurnRight
+    TurnRight,
+
+    //Client 2 to server
+    EggThrow,
+
+    //String test
+    Text
 }

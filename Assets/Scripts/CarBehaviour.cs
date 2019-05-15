@@ -34,7 +34,11 @@ public class CarBehaviour : MonoBehaviour
     }
 
     public void Accelerate() {
-        myRigidBody.AddForce(transform.forward * 10.0f);
+        myRigidBody.AddForce(transform.forward * 20.0f);
+    }
+
+    public void Decelerate() {
+        myRigidBody.AddForce(-transform.forward * 20.0f);
     }
 
     public void TurnLeft() {

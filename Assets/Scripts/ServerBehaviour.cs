@@ -93,6 +93,18 @@ public class ServerBehaviour : MonoBehaviour
         writer.Dispose();
     }
 
+    public static void SendInfo(SendType sendType, params SendTypeValue[] values) {
+        DataStreamWriter writer = Communication.Send(sendType, values);
+
+        for (int i = 0; i < Instance.m_Connections.Length; i++) {
+            if (!Instance.m_Connections[i].IsCreated)
+                continue;
+            Instance.m_Connections[i].Send(Instance.m_ServerDriver, writer);
+        }
+
+        writer.Dispose();
+    }
+
     public void OnDestroy() {
         m_ServerDriver.Dispose();
         m_Connections.Dispose();

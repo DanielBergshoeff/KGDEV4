@@ -4,10 +4,15 @@ using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Text;
 
 public static class Communication {
     public static UnityObjectEvent receivedObject;
+    public static UnityObjectsEvent receivedObjects;
 
+    /// <summary>
+    /// Dictionary containing all the SendTypes with their respective VarTypes
+    /// </summary>
     public static readonly Dictionary<SendType, VarType> SendToVar = new Dictionary<SendType, VarType> {
         //Server to client
         { SendType.CarPosition, VarType.Vector3 },
@@ -16,82 +21,221 @@ public static class Communication {
         { SendType.AssignId, VarType.Int },
 
         //Client to Server
-        { SendType.Forward, VarType.Bool },
+        { SendType.MoveForward, VarType.Bool },
+        { SendType.MoveBack, VarType.Bool },
         { SendType.TurnLeft, VarType.Bool },
-        { SendType.TurnRight, VarType.Bool }
+        { SendType.TurnRight, VarType.Bool },
+
+        //String test
+        { SendType.Text, VarType.String }
     };
 
-    public static DataStreamWriter Send(SendType sendType, object value) {
-        switch (SendToVar[sendType]) {
-            case VarType.Float:
-                return SendFloat(sendType, (float)value);
-            case VarType.Vector3:
-                return SendVector3(sendType, (Vector3)value);
-            case VarType.Int:
-                return SendInt(sendType, (int)value);
-            case VarType.Bool:
-                return SendBool(sendType, (bool)value);
-            case VarType.Quaternion:
-                return SendQuaternion(sendType, (Quaternion)value);
+    /// <summary>
+    /// Dictionary containing the capacity cost per VarType
+    /// </summary>
+    public static readonly Dictionary<VarType, int> VarToCost = new Dictionary<VarType, int> {
+        { VarType.Bool, 1 },
+        { VarType.Float, 4 },
+        { VarType.Int, 4 },
+        { VarType.Vector3, 12 },
+        { VarType.Quaternion, 16 }
+    };
 
+    /// <summary>
+    /// Dictionary containing the VarTypes of SendTypes with multiple Vars
+    /// </summary>
+    public static readonly Dictionary<SendType, VarType[]> SendToVars = new Dictionary<SendType, VarType[]> {
+        { SendType.EggThrow, new VarType[] {VarType.Vector3, VarType.Float} }
+    };
+
+    /// <summary>
+    /// Returns a DataStreamWriter containing the value of the SendType
+    /// </summary>
+    /// <param name="sendType"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static DataStreamWriter Send(SendType sendType, object value) {
+        DataStreamWriter writer = default(DataStreamWriter);
+        int dataCost = 0;
+
+        if (VarToCost.ContainsKey(SendToVar[sendType]))
+            dataCost += 4 + VarToCost[SendToVar[sendType]];
+        else {
+            switch (SendToVar[sendType]) {
+                case VarType.String:
+                    var amtOfBytes = Encoding.ASCII.GetBytes((string)value).Length;
+                    dataCost += 4 + 4 + amtOfBytes;
+                    break;
+            }
         }
-        return default(DataStreamWriter);
+        writer = new DataStreamWriter(dataCost, Allocator.Temp);
+        writer.Write((uint)sendType);
+
+        SendValue(SendToVar[sendType], value, ref writer);
+        return writer;
     }
 
-    private static DataStreamWriter SendVector3(SendType sendType, Vector3 vector) {
+    /// <summary>
+    /// Returns a DataStreamWriter containing all the values of the SendType
+    /// </summary>
+    /// <param name="sendType"></param>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static DataStreamWriter Send(SendType sendType, params object[] values) {
+        DataStreamWriter writer = default(DataStreamWriter);
 
-        var writer = new DataStreamWriter(16, Allocator.Temp);
+        if (values.Length != SendToVars[sendType].Length)
+            return writer;
+
+        int dataCost = 4;
+
+        for (int i = 0; i < values.Length; i++) {
+            dataCost += VarToCost[SendToVars[sendType][i]];
+        }
+
+        writer = new DataStreamWriter(dataCost, Allocator.Temp);
+
         writer.Write((uint)sendType);
-        writer.Write(vector.x);
-        writer.Write(vector.y);
-        writer.Write(vector.z);
+
+        for (int i = 0; i < values.Length; i++) {
+            SendValue(SendToVars[sendType][i], values[i], ref writer);
+        }
 
         return writer;
     }
 
-    private static DataStreamWriter SendQuaternion(SendType sendType, Quaternion quaternion) {
-        var writer = new DataStreamWriter(20, Allocator.Temp);
-        writer.Write((uint)sendType);
+
+    /// <summary>
+    /// Adds the value of value to writer
+    /// </summary>
+    /// <param name="varType"></param>
+    /// <param name="value"></param>
+    /// <param name="writer"></param>
+    private static void SendValue(VarType varType, object value, ref DataStreamWriter writer) {
+        switch (varType) {
+            case VarType.Float:
+                SendFloat((float)value, ref writer);
+                break;
+
+            case VarType.Vector3:
+                SendVector3((Vector3)value, ref writer);
+                break;
+
+            case VarType.Int:
+                SendInt((int)value, ref writer);
+                break;
+
+            case VarType.Bool:
+                SendBool((bool)value, ref writer);
+                break;
+
+            case VarType.Quaternion:
+                SendQuaternion((Quaternion)value, ref writer);
+                break;
+
+            case VarType.String:
+                SendString((string)value, ref writer);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Adds a string to the writer
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="writer"></param>
+    private static void SendString(string value, ref DataStreamWriter writer) {
+        byte[] bytes = Encoding.ASCII.GetBytes(value);
+        writer.Write(bytes.Length);
+        writer.Write(bytes);
+    }
+
+    /// <summary>
+    /// Adds a Vector3 to the writer
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <param name="writer"></param>
+    private static void SendVector3( Vector3 vector, ref DataStreamWriter writer) {
+        writer.Write(vector.x);
+        writer.Write(vector.y);
+        writer.Write(vector.z);
+    }
+
+    /// <summary>
+    /// Adds a Quaternion to the writer
+    /// </summary>
+    /// <param name="quaternion"></param>
+    /// <param name="writer"></param>
+    private static void SendQuaternion(Quaternion quaternion, ref DataStreamWriter writer) {
         writer.Write(quaternion.x);
         writer.Write(quaternion.y);
         writer.Write(quaternion.z);
         writer.Write(quaternion.w);
-
-        return writer;
     }
 
-    private static DataStreamWriter SendFloat (SendType sendType, float f) {
-
-        var writer = new DataStreamWriter(8, Allocator.Temp);
-        writer.Write((uint)sendType);
+    /// <summary>
+    /// Adds a float to the writer
+    /// </summary>
+    /// <param name="f"></param>
+    /// <param name="writer"></param>
+    private static void SendFloat (float f, ref DataStreamWriter writer) {
         writer.Write(f);
-
-        return writer;
     }
 
-    private static DataStreamWriter SendInt(SendType sendType, int i) {
-
-        var writer = new DataStreamWriter(8, Allocator.Temp);
-        writer.Write((uint)sendType);
+    /// <summary>
+    /// Adds an integer to the writer
+    /// </summary>
+    /// <param name="i"></param>
+    /// <param name="writer"></param>
+    private static void SendInt(int i, ref DataStreamWriter writer) {
         writer.Write(i);
-
-        return writer;
     }
 
-    private static DataStreamWriter SendBool(SendType sendType, bool b) {
-        var writer = new DataStreamWriter(1, Allocator.Temp);
-        writer.Write((uint)sendType);
+    /// <summary>
+    /// Adds a boolean to the writer
+    /// </summary>
+    /// <param name="b"></param>
+    /// <param name="writer"></param>
+    private static void SendBool(bool b, ref DataStreamWriter writer) {
         byte x = b ? (byte)1 : (byte)0;
         writer.Write(x);
-
-        return writer;
     }
 
+    /// <summary>
+    /// Reads the received stream and converts it to the original values
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="connection"></param>
     public static void Receive(DataStreamReader stream, int connection) {
         var readerCtx = default(DataStreamReader.Context);
         SendType sendType = (SendType)stream.ReadUInt(ref readerCtx);
+        if (!SendToVars.ContainsKey(sendType)) {
+            object o = ReadObject(ref stream, SendToVar[sendType], ref readerCtx);
+
+            if (o != null)
+                receivedObject.Invoke(sendType, o, connection);
+        }
+        else {
+            object[] objects = new object[SendToVars[sendType].Length];
+            for (int i = 0; i < objects.Length; i++) {
+                objects[i] = ReadObject(ref stream, SendToVars[sendType][i], ref readerCtx);
+            }
+
+            if (objects.Length > 0)
+                receivedObjects.Invoke(sendType, objects, connection);
+        }
+    }
+
+    /// <summary>
+    /// Reads the stream and returns the correct object
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="varType"></param>
+    /// <param name="readerCtx"></param>
+    /// <returns></returns>
+    private static object ReadObject(ref DataStreamReader stream, VarType varType, ref DataStreamReader.Context readerCtx) {
         object o = null;
-        switch (SendToVar[sendType]) {
+        switch (varType) {
             case VarType.Float:
                 o = stream.ReadFloat(ref readerCtx);
                 break;
@@ -110,11 +254,22 @@ public static class Communication {
             case VarType.Quaternion:
                 o = new Quaternion(stream.ReadFloat(ref readerCtx), stream.ReadFloat(ref readerCtx), stream.ReadFloat(ref readerCtx), stream.ReadFloat(ref readerCtx));
                 break;
+            case VarType.String:
+                int amtOfBytes = stream.ReadInt(ref readerCtx);
+                o = System.Text.Encoding.ASCII.GetString(stream.ReadBytesAsArray(ref readerCtx, amtOfBytes));
+                break;
         }
 
-        if(o != null)
-            receivedObject.Invoke(sendType, o, connection);
+        return o;
     }
 }
 
 public class UnityObjectEvent : UnityEvent<SendType, object, int> { }
+
+public class UnityObjectsEvent : UnityEvent<SendType, object[], int> { }
+
+
+public class SendTypeValue {
+    public SendType sendType;
+    public object value;
+}

@@ -92,5 +92,13 @@ public class ClientBehaviour : MonoBehaviour {
         writer.Dispose();
     }
 
+    public static void SendInfo(SendType sendType, params object[] values) {
+        DataStreamWriter writer = Communication.Send(sendType, values);
+
+        Instance.m_clientToServerConnection[0].Send(Instance.m_ClientDriver, writer);
+
+        writer.Dispose();
+    }
+
 
 }
