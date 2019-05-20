@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CarBehaviour : MonoBehaviour
 {
+    public float Speed = 100.0f;
     private Rigidbody myRigidBody;
 
     private Vector3 posLastFrame;
@@ -20,6 +21,9 @@ public class CarBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameManager.isServer)
+            return;
+
         if(posLastFrame != transform.position) {
             ServerBehaviour.SendInfo(SendType.CarPosition, transform.position);
         }
@@ -34,11 +38,11 @@ public class CarBehaviour : MonoBehaviour
     }
 
     public void Accelerate() {
-        myRigidBody.AddForce(transform.forward * 20.0f);
+        myRigidBody.AddForce(transform.forward * Speed);
     }
 
     public void Decelerate() {
-        myRigidBody.AddForce(-transform.forward * 20.0f);
+        myRigidBody.AddForce(-transform.forward * Speed);
     }
 
     public void TurnLeft() {

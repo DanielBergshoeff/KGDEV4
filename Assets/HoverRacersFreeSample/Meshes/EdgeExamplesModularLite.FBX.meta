@@ -1,0 +1,217 @@
+fileFormatVersion: 2
+guid: 7a0963822e36c7d42b2cbd31ecde0674
+timeCreated: 1551960697
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: HoverRacers01_1_Part01
+    100002: HoverRacers01_1_Part02
+    100004: HoverRacers01_1_Part03
+    100006: HoverRacers01_1_Part04
+    100008: HoverRacers01_1_Part05
+    100010: HoverRacers01_1_Part06
+    100012: HoverRacers01_1_Part07
+    100014: HoverRacers01_1_Part08
+    100016: HoverRacers01_2_Part01
+    100018: HoverRacers01_2_Part02
+    100020: HoverRacers01_2_Part03
+    100022: HoverRacers01_2_Part04
+    100024: HoverRacers01_2_Part05
+    100026: HoverRacers01_2_Part06
+    100028: HoverRacers01_2_Part07
+    100030: HoverRacers01_2_Part08
+    100032: HoverRacers01_3_Part01
+    100034: HoverRacers01_3_Part02
+    100036: HoverRacers01_3_Part03
+    100038: HoverRacers01_3_Part04
+    100040: HoverRacers01_3_Part05
+    100042: HoverRacers01_3_Part06
+    100044: HoverRacers01_3_Part07
+    100046: HoverRacers01_3_Part08
+    100048: HoverRacers01_3_Part09
+    100050: HoverRacers01_3_Part10
+    100052: HoverRacers01_3_Part11
+    100054: HoverRacers01_3_Part12
+    100056: //RootNode
+    400000: HoverRacers01_1_Part01
+    400002: HoverRacers01_1_Part02
+    400004: HoverRacers01_1_Part03
+    400006: HoverRacers01_1_Part04
+    400008: HoverRacers01_1_Part05
+    400010: HoverRacers01_1_Part06
+    400012: HoverRacers01_1_Part07
+    400014: HoverRacers01_1_Part08
+    400016: HoverRacers01_2_Part01
+    400018: HoverRacers01_2_Part02
+    400020: HoverRacers01_2_Part03
+    400022: HoverRacers01_2_Part04
+    400024: HoverRacers01_2_Part05
+    400026: HoverRacers01_2_Part06
+    400028: HoverRacers01_2_Part07
+    400030: HoverRacers01_2_Part08
+    400032: HoverRacers01_3_Part01
+    400034: HoverRacers01_3_Part02
+    400036: HoverRacers01_3_Part03
+    400038: HoverRacers01_3_Part04
+    400040: HoverRacers01_3_Part05
+    400042: HoverRacers01_3_Part06
+    400044: HoverRacers01_3_Part07
+    400046: HoverRacers01_3_Part08
+    400048: HoverRacers01_3_Part09
+    400050: HoverRacers01_3_Part10
+    400052: HoverRacers01_3_Part11
+    400054: HoverRacers01_3_Part12
+    400056: //RootNode
+    2300000: HoverRacers01_1_Part01
+    2300002: HoverRacers01_1_Part02
+    2300004: HoverRacers01_1_Part03
+    2300006: HoverRacers01_1_Part04
+    2300008: HoverRacers01_1_Part05
+    2300010: HoverRacers01_1_Part06
+    2300012: HoverRacers01_1_Part07
+    2300014: HoverRacers01_1_Part08
+    2300016: HoverRacers01_2_Part01
+    2300018: HoverRacers01_2_Part02
+    2300020: HoverRacers01_2_Part03
+    2300022: HoverRacers01_2_Part04
+    2300024: HoverRacers01_2_Part05
+    2300026: HoverRacers01_2_Part06
+    2300028: HoverRacers01_2_Part07
+    2300030: HoverRacers01_2_Part08
+    2300032: HoverRacers01_3_Part01
+    2300034: HoverRacers01_3_Part02
+    2300036: HoverRacers01_3_Part03
+    2300038: HoverRacers01_3_Part04
+    2300040: HoverRacers01_3_Part05
+    2300042: HoverRacers01_3_Part06
+    2300044: HoverRacers01_3_Part07
+    2300046: HoverRacers01_3_Part08
+    2300048: HoverRacers01_3_Part09
+    2300050: HoverRacers01_3_Part10
+    2300052: HoverRacers01_3_Part11
+    2300054: HoverRacers01_3_Part12
+    3300000: HoverRacers01_1_Part01
+    3300002: HoverRacers01_1_Part02
+    3300004: HoverRacers01_1_Part03
+    3300006: HoverRacers01_1_Part04
+    3300008: HoverRacers01_1_Part05
+    3300010: HoverRacers01_1_Part06
+    3300012: HoverRacers01_1_Part07
+    3300014: HoverRacers01_1_Part08
+    3300016: HoverRacers01_2_Part01
+    3300018: HoverRacers01_2_Part02
+    3300020: HoverRacers01_2_Part03
+    3300022: HoverRacers01_2_Part04
+    3300024: HoverRacers01_2_Part05
+    3300026: HoverRacers01_2_Part06
+    3300028: HoverRacers01_2_Part07
+    3300030: HoverRacers01_2_Part08
+    3300032: HoverRacers01_3_Part01
+    3300034: HoverRacers01_3_Part02
+    3300036: HoverRacers01_3_Part03
+    3300038: HoverRacers01_3_Part04
+    3300040: HoverRacers01_3_Part05
+    3300042: HoverRacers01_3_Part06
+    3300044: HoverRacers01_3_Part07
+    3300046: HoverRacers01_3_Part08
+    3300048: HoverRacers01_3_Part09
+    3300050: HoverRacers01_3_Part10
+    3300052: HoverRacers01_3_Part11
+    3300054: HoverRacers01_3_Part12
+    4300000: HoverRacers01_2_Part07
+    4300002: HoverRacers01_3_Part01
+    4300004: HoverRacers01_2_Part08
+    4300006: HoverRacers01_2_Part02
+    4300008: HoverRacers01_2_Part03
+    4300010: HoverRacers01_2_Part04
+    4300012: HoverRacers01_2_Part05
+    4300014: HoverRacers01_2_Part06
+    4300016: HoverRacers01_2_Part01
+    4300018: HoverRacers01_3_Part02
+    4300020: HoverRacers01_3_Part03
+    4300022: HoverRacers01_3_Part04
+    4300024: HoverRacers01_3_Part05
+    4300026: HoverRacers01_3_Part06
+    4300028: HoverRacers01_3_Part07
+    4300030: HoverRacers01_3_Part08
+    4300032: HoverRacers01_3_Part09
+    4300034: HoverRacers01_3_Part10
+    4300036: HoverRacers01_3_Part11
+    4300038: HoverRacers01_3_Part12
+    4300040: HoverRacers01_1_Part08
+    4300042: HoverRacers01_1_Part01
+    4300044: HoverRacers01_1_Part02
+    4300046: HoverRacers01_1_Part03
+    4300048: HoverRacers01_1_Part04
+    4300050: HoverRacers01_1_Part05
+    4300052: HoverRacers01_1_Part06
+    4300054: HoverRacers01_1_Part07
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

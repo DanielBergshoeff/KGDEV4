@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
         carBehaviour = Car.GetComponent<CarBehaviour>();
 
-        playerIdTurn = 1;
+        playerIdTurn = 0;
 
         isServer = localIsServer;
     }
