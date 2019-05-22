@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +15,10 @@ public class GameManager : MonoBehaviour
     public GameObject Car;
     private CarBehaviour carBehaviour;
     public bool localIsServer;
+
+    public UnityEngine.UI.Text TextUsername;
+    public UnityEngine.UI.Text TextPassword;
+    public GameObject loginCanvas;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +45,38 @@ public class GameManager : MonoBehaviour
         }
         else {
             ClientBehaviourMethod();
+        }
+    }
+
+    public void Login() {
+        string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
+        StartCoroutine(GetRequest(request));
+        //JsonUtility.FromJson<UserInfo>()
+    }
+
+    IEnumerator GetRequest(string uri) {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri)) {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            if (webRequest.isNetworkError) {
+                Debug.Log(pages[page] + ": Error: " + webRequest.error);
+            }
+            else {
+                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                Uncode(webRequest.downloadHandler.text);
+            }
+        }
+    }
+
+    private void Uncode(string json) {
+        UserInfo ui = JsonUtility.FromJson<UserInfo>(json);
+        if (ui.sessid != "0") {
+            loginCanvas.SetActive(false);
+            Debug.Log(ui.username);
         }
     }
 
@@ -128,4 +166,9 @@ public class GameManager : MonoBehaviour
 
         }
     }
+}
+
+public class UserInfo {
+    public string sessid;
+    public string username;
 }
