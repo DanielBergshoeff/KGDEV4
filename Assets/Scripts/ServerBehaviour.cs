@@ -107,6 +107,10 @@ public class ServerBehaviour : MonoBehaviour
         writer.Dispose();
     }
 
+    public static bool HasClients() {
+        return Instance.m_Connections.Length > 0;
+    }
+
     public void OnDestroy() {
         m_ServerDriver.Dispose();
         m_Connections.Dispose();

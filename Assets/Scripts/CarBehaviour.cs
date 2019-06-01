@@ -24,25 +24,43 @@ public class CarBehaviour : MonoBehaviour
         if (!GameManager.isServer)
             return;
 
-        if(posLastFrame != transform.position) {
-            ServerBehaviour.SendInfo(SendType.CarPosition, transform.position);
-        }
+        if (ServerBehaviour.HasClients()) {
+            if (posLastFrame != transform.position) {
+                ServerBehaviour.SendInfo(SendType.CarPosition, transform.position);
+            }
 
-        if(rotLastFrame != transform.rotation) {
-            ServerBehaviour.SendInfo(SendType.CarRotation, transform.rotation);
-        }
+            if (rotLastFrame != transform.rotation) {
+                ServerBehaviour.SendInfo(SendType.CarRotation, transform.rotation);
+            }
 
-        posLastFrame = transform.position;
-        rotLastFrame = transform.rotation;
+            posLastFrame = transform.position;
+            rotLastFrame = transform.rotation;
+        }
+        else {
+            if (Input.GetKey(KeyCode.W)) {
+                Accelerate();
+            }
+            if (Input.GetKey(KeyCode.S)) {
+                Decelerate();
+            }
+            if (Input.GetKey(KeyCode.A)) {
+                TurnLeft();
+            }
+            if (Input.GetKey(KeyCode.D)) {
+                TurnRight();
+            }
+        }
 
     }
 
     public void Accelerate() {
-        myRigidBody.AddForce(transform.forward * Speed);
+        if(myRigidBody.velocity.magnitude <= Speed * 2)
+            myRigidBody.AddForce(transform.forward * Speed);
     }
 
     public void Decelerate() {
-        myRigidBody.AddForce(-transform.forward * Speed);
+        if(myRigidBody.velocity.magnitude <= Speed * 2)
+            myRigidBody.AddForce(-transform.forward * Speed);
     }
 
     public void TurnLeft() {
