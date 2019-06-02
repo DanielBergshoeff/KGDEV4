@@ -2,6 +2,7 @@
 using UnityEngine;
 using Unity.Networking.Transport;
 using Unity.Collections;
+using System.Collections.Generic;
 using Unity.Jobs;
 
 public class ServerBehaviour : MonoBehaviour
@@ -10,6 +11,9 @@ public class ServerBehaviour : MonoBehaviour
 
     public UdpNetworkDriver m_ServerDriver;
     private NativeList<NetworkConnection> m_Connections;
+
+    private int amtOfPlayers;
+    public Dictionary<UserConnection, NetworkConnection> connectionToUserInfo;
 
     // Start by creating a driver for the client and an address for the server.
     void Start() {
@@ -28,7 +32,9 @@ public class ServerBehaviour : MonoBehaviour
         else
             m_ServerDriver.Listen();
 
+        amtOfPlayers = 0;
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
+        connectionToUserInfo = new Dictionary<UserConnection, NetworkConnection>();
 
         SQPDriver.ServerPort = serverPort;
     }
@@ -64,14 +70,11 @@ public class ServerBehaviour : MonoBehaviour
             NetworkEvent.Type cmd;
             while ((cmd = m_ServerDriver.PopEventForConnection(m_Connections[i], out stream)) !=
                 NetworkEvent.Type.Empty) {
-                if (cmd == NetworkEvent.Type.Data) {
-                    Communication.Receive(stream, i);
+                if(cmd == NetworkEvent.Type.Connect) {
 
-                    /*
-                    using (var writer = new DataStreamWriter(4, Allocator.Temp)) {
-                        writer.Write(number);
-                        m_ServerDriver.Send(NetworkPipeline.Null, m_Connections[i], writer);
-                    }*/
+                }
+                if (cmd == NetworkEvent.Type.Data) {
+                    Communication.Receive(stream, m_Connections[i]);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect) {
                     Debug.Log("Client disconnected from server");
@@ -81,30 +84,85 @@ public class ServerBehaviour : MonoBehaviour
         }
     }
 
-    public static void SendInfo(SendType sendType, object value) {
-        DataStreamWriter writer = Communication.Send(sendType, value);
+    public static void SetSessionId(string sessid, NetworkConnection connection) {
+        UserConnection receivedSession = null;
+        foreach(UserConnection ui in Instance.connectionToUserInfo.Keys){
+            if (ui.sessionid == sessid)
+                receivedSession = ui;
+        }
 
+        if (receivedSession != null) {
+            Instance.connectionToUserInfo[receivedSession] = connection;
+        }
+        else {
+            UserConnection ui = new UserConnection();
+            ui.sessionid = sessid;
+            ui.connection = Instance.amtOfPlayers;
+
+            Instance.connectionToUserInfo.Add(ui, connection);
+            SendInfo(WriteInfo(SendType.AssignId, Instance.amtOfPlayers), connection);
+            Instance.amtOfPlayers++;
+            if(Instance.amtOfPlayers == 1) {
+                GameManager.playerTurn = connection;
+            }
+            else if(Instance.amtOfPlayers == 2) {
+                SendInfo(WriteInfo(SendType.StartGame, 5.0f));
+                Instance.Invoke("StartGame", 5.0f);
+            }
+        }
+    }
+
+    public void StartGame() {
+        GameManager.Instance.gameStarted = true;
+    }
+
+    public static DataStreamWriter WriteInfo(SendType sendType, object value) {
+        DataStreamWriter writer = Communication.Send(sendType, value);
+        return writer;
+    }
+
+    public static DataStreamWriter WriteInfo(SendType sendType, params SendTypeValue[] values) {
+        DataStreamWriter writer = Communication.Send(sendType, values);
+        return writer;
+    }
+
+    public static void SendInfo(DataStreamWriter writer, params NetworkConnection[] conn) {
         if (Instance != null) {
-            for (int i = 0; i < Instance.m_Connections.Length; i++) {
-                if (!Instance.m_Connections[i].IsCreated)
-                    continue;
-                Instance.m_Connections[i].Send(Instance.m_ServerDriver, writer);
+            if (conn.Length > 0) {
+                for (int i = 0; i < conn.Length; i++) {
+                    if (!conn[i].IsCreated)
+                        continue;
+                    conn[i].Send(Instance.m_ServerDriver, writer);
+                }
+            }
+            else {
+                for (int i = 0; i < Instance.m_Connections.Length; i++) {
+                    if (!Instance.m_Connections[i].IsCreated)
+                        continue;
+                    Instance.m_Connections[i].Send(Instance.m_ServerDriver, writer);
+                }
             }
         }
 
         writer.Dispose();
     }
 
-    public static void SendInfo(SendType sendType, params SendTypeValue[] values) {
-        DataStreamWriter writer = Communication.Send(sendType, values);
-
-        for (int i = 0; i < Instance.m_Connections.Length; i++) {
-            if (!Instance.m_Connections[i].IsCreated)
-                continue;
-            Instance.m_Connections[i].Send(Instance.m_ServerDriver, writer);
+    public static NetworkConnection GetConnectionByPlayerNr(int playerNr) {
+        foreach(UserConnection uc in Instance.connectionToUserInfo.Keys) {
+            if (uc.connection == playerNr)
+                return Instance.connectionToUserInfo[uc];
         }
 
-        writer.Dispose();
+        return default(NetworkConnection);
+    }
+
+    public static UserConnection GetUserConnectionByPlayerNr(int playerNr) {
+        foreach (UserConnection uc in Instance.connectionToUserInfo.Keys) {
+            if (uc.connection == playerNr)
+                return uc;
+        }
+
+        return null;
     }
 
     public static bool HasClients() {
@@ -115,4 +173,9 @@ public class ServerBehaviour : MonoBehaviour
         m_ServerDriver.Dispose();
         m_Connections.Dispose();
     }
+}
+
+public class UserConnection {
+    public string sessionid;
+    public int connection;
 }

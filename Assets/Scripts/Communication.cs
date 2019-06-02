@@ -19,6 +19,9 @@ public static class Communication {
         { SendType.CarRotation, VarType.Quaternion },
         { SendType.TimeLeft, VarType.Float },
         { SendType.AssignId, VarType.Int },
+        { SendType.StartGame, VarType.Float },
+        { SendType.WonGame, VarType.Bool },
+        { SendType.DriveTurn, VarType.Bool },
 
         //Client to Server
         { SendType.MoveForward, VarType.Bool },
@@ -27,7 +30,8 @@ public static class Communication {
         { SendType.TurnRight, VarType.Bool },
 
         //String test
-        { SendType.Text, VarType.String }
+        { SendType.Text, VarType.String },
+        { SendType.SessionId, VarType.String }
     };
 
     /// <summary>
@@ -206,7 +210,7 @@ public static class Communication {
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="connection"></param>
-    public static void Receive(DataStreamReader stream, int connection) {
+    public static void Receive(DataStreamReader stream, NetworkConnection connection) {
         var readerCtx = default(DataStreamReader.Context);
         SendType sendType = (SendType)stream.ReadUInt(ref readerCtx);
         if (!SendToVars.ContainsKey(sendType)) {
@@ -264,9 +268,9 @@ public static class Communication {
     }
 }
 
-public class UnityObjectEvent : UnityEvent<SendType, object, int> { }
+public class UnityObjectEvent : UnityEvent<SendType, object, NetworkConnection> { }
 
-public class UnityObjectsEvent : UnityEvent<SendType, object[], int> { }
+public class UnityObjectsEvent : UnityEvent<SendType, object[], NetworkConnection> { }
 
 
 public class SendTypeValue {

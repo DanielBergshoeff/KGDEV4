@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 914379019243850644}
   m_Layer: 0
   m_Name: SpaceCar
-  m_TagString: Untagged
+  m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,7 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97e65dc5ee3315a49b2a4efce2bdf270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 100
+  Speed: 150
+  camPlayerOne: {fileID: 2220596365731315080}
+  camPlayerTwo: {fileID: 1656678997151362386}
+  targetPlayerOne: {fileID: 0}
+  targetPlayerTwo: {fileID: 0}
 --- !u!54 &914379019243850644
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -77,12 +81,12 @@ GameObject:
   - component: {fileID: 2220596365731315080}
   - component: {fileID: 5336089685160669035}
   m_Layer: 0
-  m_Name: Camera
-  m_TagString: Untagged
+  m_Name: CameraPlayerOne
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &949388066457654740
 Transform:
   m_ObjectHideFlags: 0
@@ -160,12 +164,12 @@ GameObject:
   - component: {fileID: 1656678997151362386}
   - component: {fileID: 367495054930335296}
   m_Layer: 0
-  m_Name: Camera (1)
-  m_TagString: Untagged
+  m_Name: CameraPlayerTwo
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7897772796110213141
 Transform:
   m_ObjectHideFlags: 0
@@ -238,6 +242,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 914379019243850645}
     m_Modifications:
+    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
+      propertyPath: m_Name
+      value: Edge_3 (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 4516157433285186, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -282,10 +290,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
-      propertyPath: m_Name
-      value: Edge_3 (1)
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
 --- !u!4 &909882930234409236 stripped
@@ -301,6 +305,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 914379019243850645}
     m_Modifications:
+    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
+      propertyPath: m_Name
+      value: Edge_3
+      objectReference: {fileID: 0}
     - target: {fileID: 4516157433285186, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -344,10 +352,6 @@ PrefabInstance:
     - target: {fileID: 4516157433285186, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
-      propertyPath: m_Name
-      value: Edge_3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7120dd567de61046942a49d08b17fb2, type: 3}

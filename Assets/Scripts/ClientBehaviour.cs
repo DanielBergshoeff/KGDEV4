@@ -10,7 +10,7 @@ public class ClientBehaviour : MonoBehaviour {
     public static ClientBehaviour Instance;
 
     public UdpNetworkDriver m_ClientDriver;
-    private NativeArray<NetworkConnection> m_clientToServerConnection;
+    public NativeArray<NetworkConnection> m_clientToServerConnection;
     private NetworkEndPoint ServerEndPoint;
 
     public bool Done;
@@ -58,27 +58,13 @@ public class ClientBehaviour : MonoBehaviour {
             NetworkEvent.Type.Empty) {
             if (cmd == NetworkEvent.Type.Connect) {
                 Debug.Log("We are now connected to the server");
-                /*
-                float value = 1.5f;
-                using (var writer = new DataStreamWriter(4, Allocator.Temp)) {
-                    writer.Write(value);
-                    m_clientToServerConnection[0].Send(m_ClientDriver, writer);
-                }*/
             }
             else if (cmd == NetworkEvent.Type.Data) {
-                Communication.Receive(stream, 0);
-
-                /*
-                var readerCtx = default(DataStreamReader.Context);
-                uint value = stream.ReadUInt(ref readerCtx);
-                Debug.Log("Got the value = " + value + " back from the server");
-                */
-                //Done = true;
-                //m_clientToServerConnection[0].Disconnect(m_ClientDriver);
-                //m_clientToServerConnection[0] = default(NetworkConnection);
+                Communication.Receive(stream, m_clientToServerConnection[0]);
             }
             else if (cmd == NetworkEvent.Type.Disconnect) {
                 Debug.Log("Client got disconnected from server");
+                GameManager.Instance.sentSessionId = false;
                 m_clientToServerConnection[0] = default(NetworkConnection);
             }
         }

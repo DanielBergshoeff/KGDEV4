@@ -5,6 +5,12 @@ using UnityEngine;
 public class CarBehaviour : MonoBehaviour
 {
     public float Speed = 100.0f;
+    public Camera camPlayerOne;
+    public Camera camPlayerTwo;
+
+    public GameObject targetPlayerOne;
+    public GameObject targetPlayerTwo;
+
     private Rigidbody myRigidBody;
 
     private Vector3 posLastFrame;
@@ -26,11 +32,11 @@ public class CarBehaviour : MonoBehaviour
 
         if (ServerBehaviour.HasClients()) {
             if (posLastFrame != transform.position) {
-                ServerBehaviour.SendInfo(SendType.CarPosition, transform.position);
+                ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.CarPosition, transform.position));
             }
 
             if (rotLastFrame != transform.rotation) {
-                ServerBehaviour.SendInfo(SendType.CarRotation, transform.rotation);
+                ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.CarRotation, transform.rotation));
             }
 
             posLastFrame = transform.position;
@@ -50,17 +56,34 @@ public class CarBehaviour : MonoBehaviour
                 TurnRight();
             }
         }
+    }
 
+    private void OnTriggerEnter(Collider other) {
+        if (!GameManager.isServer)
+            return;
+
+        if(other.gameObject == targetPlayerOne) {
+            GameManager.Instance.PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(0));
+            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, true), ServerBehaviour.GetConnectionByPlayerNr(0));
+            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, false), ServerBehaviour.GetConnectionByPlayerNr(1));
+        }
+        else if(other.gameObject == targetPlayerTwo) {
+            GameManager.Instance.PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(1));
+            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, true), ServerBehaviour.GetConnectionByPlayerNr(1));
+            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, false), ServerBehaviour.GetConnectionByPlayerNr(0));
+        }
     }
 
     public void Accelerate() {
-        if(myRigidBody.velocity.magnitude <= Speed * 2)
-            myRigidBody.AddForce(transform.forward * Speed);
+        myRigidBody.AddForce(transform.forward * Speed);
+        if (myRigidBody.velocity.magnitude > Speed)
+            myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, Speed);
     }
 
     public void Decelerate() {
-        if(myRigidBody.velocity.magnitude <= Speed * 2)
-            myRigidBody.AddForce(-transform.forward * Speed);
+        myRigidBody.AddForce(-transform.forward * Speed);
+        if (myRigidBody.velocity.magnitude > Speed)
+            myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, Speed);
     }
 
     public void TurnLeft() {

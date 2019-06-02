@@ -51,15 +51,7 @@ public class MouseLook : MonoBehaviour {
     }
 
     void Start() {
-        //if(!networkView.isMine)
-        //enabled = false;
-
-        // Make the rigid body not change rotation
-        //if (rigidbody)
-        //rigidbody.freezeRotation = true;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
     }
 }

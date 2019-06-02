@@ -18,6 +18,9 @@ public enum SendType {
     CarPosition,
     CarRotation,
     TimeLeft,
+    StartGame,
+    WonGame,
+    DriveTurn,
 
     //Client 1 to Server
     MoveForward,
@@ -27,6 +30,9 @@ public enum SendType {
 
     //Client 2 to server
     EggThrow,
+
+    //Clients to server
+    SessionId,
 
     //String test
     Text
