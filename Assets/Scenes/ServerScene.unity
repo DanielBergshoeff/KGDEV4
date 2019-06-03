@@ -457,16 +457,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Car: {fileID: 914379020909768178}
   localIsServer: 1
-  EggPrefab: {fileID: 7743584191008373197, guid: 7cf104d23231d9a4fb6394ba6c74cee9,
-    type: 3}
+  GameTimerText: {fileID: 147373147}
+  gameStarted: 0
   TextUsername: {fileID: 0}
   TextPassword: {fileID: 0}
-  GameTimerText: {fileID: 147373147}
   loginCanvas: {fileID: 0}
   WinCanvas: {fileID: 0}
   LossCanvas: {fileID: 0}
   sentSessionId: 0
-  gameStarted: 0
+  EggPrefab: {fileID: 7743584191008373197, guid: 7cf104d23231d9a4fb6394ba6c74cee9,
+    type: 3}
+  RespawnParent: {fileID: 332065618364909051}
 --- !u!1 &1838955709
 GameObject:
   m_ObjectHideFlags: 0
@@ -545,26 +546,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level
       objectReference: {fileID: 0}
-    - target: {fileID: 8881363779274395020, guid: 6d06af1c5710f2e4385ac92257b3c210,
-        type: 3}
-      propertyPath: m_BoundingSphereOverride.x
-      value: 4.08e-43
-      objectReference: {fileID: 0}
-    - target: {fileID: 8881363779274395020, guid: 6d06af1c5710f2e4385ac92257b3c210,
-        type: 3}
-      propertyPath: m_BoundingSphereOverride.y
-      value: 1.718275e+25
-      objectReference: {fileID: 0}
-    - target: {fileID: 8881363779274395020, guid: 6d06af1c5710f2e4385ac92257b3c210,
-        type: 3}
-      propertyPath: m_BoundingSphereOverride.z
-      value: 2.678166e+11
-      objectReference: {fileID: 0}
-    - target: {fileID: 8881363779274395020, guid: 6d06af1c5710f2e4385ac92257b3c210,
-        type: 3}
-      propertyPath: m_BoundingSphereOverride.w
-      value: 4.5977716e-17
-      objectReference: {fileID: 0}
     - target: {fileID: 332065619217588027, guid: 6d06af1c5710f2e4385ac92257b3c210,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -622,6 +603,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d06af1c5710f2e4385ac92257b3c210, type: 3}
+--- !u!1 &332065618364909051 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2016342331493211376, guid: 6d06af1c5710f2e4385ac92257b3c210,
+    type: 3}
+  m_PrefabInstance: {fileID: 332065618364909050}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &914379020909768177
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -633,41 +620,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SpaceCar
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 350
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
         type: 3}

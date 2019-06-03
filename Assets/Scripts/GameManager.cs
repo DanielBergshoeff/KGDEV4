@@ -7,20 +7,27 @@ using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
+    //Both
     public static GameManager Instance;
     public static NetworkConnection playerTurn;
     public static bool isServer;
 
     public static int myId;
 
+    [Header("Both")]
     public GameObject Car;
-    private CarBehaviour carBehaviour;
-    public bool localIsServer;
-    public GameObject EggPrefab;
 
+    public bool localIsServer;
+    public UnityEngine.UI.Text GameTimerText;
+
+    private CarBehaviour carBehaviour;
+    public bool gameStarted = false;
+    private float gameTimer = 0.0f;
+
+    //Client
+    [Header("Client")]
     public UnityEngine.UI.Text TextUsername;
     public UnityEngine.UI.Text TextPassword;
-    public UnityEngine.UI.Text GameTimerText;
     public GameObject loginCanvas;
 
     public GameObject WinCanvas;
@@ -29,8 +36,14 @@ public class GameManager : MonoBehaviour
     public UserInfo userInfo;
     public bool sentSessionId;
 
-    public bool gameStarted = false;
-    private float gameTimer = 0.0f;
+    private bool driveTurn = false;
+
+    //Server
+    [Header("Server")]
+    public GameObject EggPrefab;
+    public GameObject RespawnParent;
+    private List<GameObject> RespawnPositions;
+    private int currentRespawnPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -51,12 +64,25 @@ public class GameManager : MonoBehaviour
         userInfo.username = "0";
 
         isServer = localIsServer;
+
+        if (!isServer)
+            return;
+
+        RespawnPositions = new List<GameObject>();
+        for (int i = 0; i < RespawnParent.transform.childCount; i++) {
+            RespawnPositions.Add(RespawnParent.transform.GetChild(i).gameObject);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         if (gameTimer < 0.0f || gameStarted) {
+            if (isServer) {
+                if (gameTimer > 0f && gameTimer % 10.0f > 9.9f && (gameTimer + Time.deltaTime) % 10.0f < 0.1f)
+                    SwitchRoles();
+            }
+
             gameTimer += Time.deltaTime;
             GameTimerText.text = gameTimer.ToString("F2");
         }
@@ -66,6 +92,24 @@ public class GameManager : MonoBehaviour
         }
         else {
             ClientBehaviourMethod();
+        }
+    }
+
+    public void RespawnCar() {
+        Car.transform.position = RespawnPositions[currentRespawnPosition].transform.position;
+        Car.transform.rotation = Quaternion.identity;
+    }
+
+    public void SwitchRoles() {
+        int tempPlayerTurn = playerTurn.InternalId;
+        foreach (NetworkConnection nc in ServerBehaviour.Instance.connectionToUserInfo.Values) {
+            if (nc.InternalId == tempPlayerTurn) {
+                ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.DriveTurn, false), nc);
+            }
+            else {
+                playerTurn = nc;
+                ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.DriveTurn, true), nc);
+            }
         }
     }
 
@@ -119,7 +163,7 @@ public class GameManager : MonoBehaviour
             }
             else {
                 Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                UncodeSet(webRequest.downloadHandler.text);
+                //UncodeSet(webRequest.downloadHandler.text);
             }
         }
     }
@@ -134,11 +178,11 @@ public class GameManager : MonoBehaviour
     }
 
     private void UncodeSet(string json) {
-        int i = JsonUtility.FromJson<int>(json);
+        //int i = JsonUtility.FromJson<int>(json);
     }
 
     private void ServerBehaviourMethod() {
-
+        
     }
 
     private void ClientBehaviourMethod() {
@@ -148,7 +192,7 @@ public class GameManager : MonoBehaviour
         if (userInfo.sessid == "0") //If the player is not logged in, return
             return;
 
-        if(!sentSessionId) {
+        if (!sentSessionId) {
             ClientBehaviour.SendInfo(SendType.SessionId, userInfo.sessid);
             loginCanvas.SetActive(false);
             sentSessionId = true;
@@ -157,26 +201,32 @@ public class GameManager : MonoBehaviour
         if (!gameStarted)
             return;
 
-        //Player Driving
-        if (Input.GetKey(KeyCode.W)) {
-            ClientBehaviour.SendInfo(SendType.MoveForward, true);
+        if (driveTurn) {
+            //Player Driving
+            if (Input.GetKey(KeyCode.W)) {
+                ClientBehaviour.SendInfo(SendType.MoveForward, true);
+            }
+            if (Input.GetKey(KeyCode.S)) {
+                ClientBehaviour.SendInfo(SendType.MoveBack, true);
+            }
+            if (Input.GetKey(KeyCode.A)) {
+                ClientBehaviour.SendInfo(SendType.TurnLeft, true);
+            }
+            if (Input.GetKey(KeyCode.D)) {
+                ClientBehaviour.SendInfo(SendType.TurnRight, true);
+            }
         }
-        if (Input.GetKey(KeyCode.S)) {
-            ClientBehaviour.SendInfo(SendType.MoveBack, true);
-        }
-        if (Input.GetKey(KeyCode.A)) {
-            ClientBehaviour.SendInfo(SendType.TurnLeft, true);
-        }
-        if (Input.GetKey(KeyCode.D)) {
-            ClientBehaviour.SendInfo(SendType.TurnRight, true);
-        }
-
-        //Player Egging
-        if (Input.GetMouseButtonDown(0)) {
-            ClientBehaviour.SendInfo(SendType.EggThrow, Camera.main.transform.forward, 10.0f);
-        }
-        if (Input.GetKeyDown(KeyCode.T)) {
-            ClientBehaviour.SendInfo(SendType.Text, "This is a text test!");
+        else {
+            //Player Egging
+            if (Input.GetMouseButtonDown(0)) {
+                if(myId == 0)
+                    ClientBehaviour.SendInfo(SendType.EggThrow, carBehaviour.camPlayerOneBackwards.transform.forward, 10.0f);
+                else
+                    ClientBehaviour.SendInfo(SendType.EggThrow, carBehaviour.camPlayerTwoBackwards.transform.forward, 10.0f);
+            }
+            if (Input.GetKeyDown(KeyCode.T)) {
+                ClientBehaviour.SendInfo(SendType.Text, "This is a text test!");
+            }
         }
     }
 
@@ -192,10 +242,16 @@ public class GameManager : MonoBehaviour
             if (connection == playerTurn) { //If the input is coming from the player whose turn it is to drive
                 switch (sendType) {
                     case SendType.MoveForward:
-                        carBehaviour.Accelerate();
+                        if(ServerBehaviour.GetPlayerNrByConnection(connection) == 0)
+                            carBehaviour.Accelerate();
+                        else
+                            carBehaviour.Decelerate();
                         break;
                     case SendType.MoveBack:
-                        carBehaviour.Decelerate();
+                        if (ServerBehaviour.GetPlayerNrByConnection(connection) == 0)
+                            carBehaviour.Decelerate();
+                        else
+                            carBehaviour.Accelerate();
                         break;
                     case SendType.TurnLeft:
                         carBehaviour.TurnLeft();
@@ -241,6 +297,29 @@ public class GameManager : MonoBehaviour
                         LossCanvas.SetActive(true);
                     gameStarted = false;
                     break;
+                case SendType.DriveTurn:
+                    driveTurn = (bool)o;
+                    if (myId == 0) {
+                        if (driveTurn) {
+                            carBehaviour.camPlayerOne.gameObject.SetActive(true);
+                            carBehaviour.camPlayerOneBackwards.gameObject.SetActive(false);
+                        }
+                        else {
+                            carBehaviour.camPlayerOneBackwards.gameObject.SetActive(true);
+                            carBehaviour.camPlayerOne.gameObject.SetActive(false);
+                        }
+                    }
+                    else {
+                        if (driveTurn) {
+                            carBehaviour.camPlayerTwo.gameObject.SetActive(true);
+                            carBehaviour.camPlayerTwoBackwards.gameObject.SetActive(false);
+                        }
+                        else {
+                            carBehaviour.camPlayerTwoBackwards.gameObject.SetActive(true);
+                            carBehaviour.camPlayerTwo.gameObject.SetActive(false);
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -253,10 +332,17 @@ public class GameManager : MonoBehaviour
             else {//If the input is coming from the player whose turn it is to throw eggs
                 switch (sendType) {
                     case SendType.EggThrow:
+                        Vector3 posToThrowFrom = Vector3.zero;
                         Vector3 eggDirection = (Vector3)values[0];
                         float eggForce = (float)values[1];
-                        Debug.Log(eggDirection);
-                        Debug.Log(eggForce);
+                        if(ServerBehaviour.KeyByValue(ServerBehaviour.Instance.connectionToUserInfo, connection).connection == 0) {
+                            posToThrowFrom = carBehaviour.camPlayerOneBackwards.transform.position;
+                        }
+                        else {
+                            posToThrowFrom = carBehaviour.camPlayerTwoBackwards.transform.position;
+                        }
+                        GameObject egg = Instantiate(EggPrefab, posToThrowFrom, Quaternion.identity);
+                        egg.GetComponent<Rigidbody>().AddForce(eggDirection * eggForce);
                         break;
                 }
             }
@@ -269,6 +355,12 @@ public class GameManager : MonoBehaviour
     public void PlayerWin(UserConnection conn) {
         gameStarted = false;
         SetScore(conn.sessionid, gameTimer);
+    }
+
+    public void TouchRespawnPosition(GameObject go) {
+        if (RespawnPositions.Contains(go)) {
+            currentRespawnPosition = RespawnPositions.IndexOf(go);
+        }
     }
 }
 

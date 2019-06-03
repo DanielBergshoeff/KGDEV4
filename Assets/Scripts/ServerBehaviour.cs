@@ -103,9 +103,12 @@ public class ServerBehaviour : MonoBehaviour
             SendInfo(WriteInfo(SendType.AssignId, Instance.amtOfPlayers), connection);
             Instance.amtOfPlayers++;
             if(Instance.amtOfPlayers == 1) {
-                GameManager.playerTurn = connection;
+                //GameManager.playerTurn = connection;
             }
             else if(Instance.amtOfPlayers == 2) {
+                GameManager.playerTurn = connection;
+                GameManager.Instance.SwitchRoles();
+
                 SendInfo(WriteInfo(SendType.StartGame, 5.0f));
                 Instance.Invoke("StartGame", 5.0f);
             }
@@ -165,6 +168,11 @@ public class ServerBehaviour : MonoBehaviour
         return null;
     }
 
+    public static int GetPlayerNrByConnection(NetworkConnection connection) {
+        UserConnection uc = KeyByValue(Instance.connectionToUserInfo, connection);
+        return uc.connection;
+    }
+
     public static bool HasClients() {
         return Instance.m_Connections.Length > 0;
     }
@@ -172,6 +180,17 @@ public class ServerBehaviour : MonoBehaviour
     public void OnDestroy() {
         m_ServerDriver.Dispose();
         m_Connections.Dispose();
+    }
+
+    public static UserConnection KeyByValue(Dictionary<UserConnection, NetworkConnection> dict, NetworkConnection val) {
+        UserConnection key = null;
+        foreach (KeyValuePair<UserConnection, NetworkConnection> pair in dict) {
+            if (pair.Value == val) {
+                key = pair.Key;
+                break;
+            }
+        }
+        return key;
     }
 }
 

@@ -675,15 +675,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Car: {fileID: 502919465}
   localIsServer: 0
-  EggPrefab: {fileID: 0}
+  GameTimerText: {fileID: 2040720217}
+  gameStarted: 0
   TextUsername: {fileID: 1418373976}
   TextPassword: {fileID: 582100241}
-  GameTimerText: {fileID: 2040720217}
   loginCanvas: {fileID: 378577917}
   WinCanvas: {fileID: 13783756}
   LossCanvas: {fileID: 1396601424}
   sentSessionId: 0
-  gameStarted: 0
+  EggPrefab: {fileID: 0}
+  RespawnParent: {fileID: 0}
 --- !u!1 &911338738
 GameObject:
   m_ObjectHideFlags: 0
@@ -1330,41 +1331,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SpaceCar
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 350
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 914379019243850645, guid: 7b3025ada2d2b234ea555e3426a20707,
         type: 3}

@@ -7,6 +7,8 @@ public class CarBehaviour : MonoBehaviour
     public float Speed = 100.0f;
     public Camera camPlayerOne;
     public Camera camPlayerTwo;
+    public Camera camPlayerOneBackwards;
+    public Camera camPlayerTwoBackwards;
 
     public GameObject targetPlayerOne;
     public GameObject targetPlayerTwo;
@@ -62,6 +64,9 @@ public class CarBehaviour : MonoBehaviour
         if (!GameManager.isServer)
             return;
 
+        if (!GameManager.Instance.gameStarted)
+            return;
+
         if(other.gameObject == targetPlayerOne) {
             GameManager.Instance.PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(0));
             ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, true), ServerBehaviour.GetConnectionByPlayerNr(0));
@@ -71,6 +76,19 @@ public class CarBehaviour : MonoBehaviour
             GameManager.Instance.PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(1));
             ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, true), ServerBehaviour.GetConnectionByPlayerNr(1));
             ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, false), ServerBehaviour.GetConnectionByPlayerNr(0));
+        }
+        else if (other.CompareTag("RespawnPosition")) {
+            GameManager.Instance.TouchRespawnPosition(other.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (!GameManager.isServer)
+            return;
+
+        if (collision.gameObject.CompareTag("RespawnTag")) {
+            myRigidBody.velocity = Vector3.zero;
+            GameManager.Instance.RespawnCar();
         }
     }
 
