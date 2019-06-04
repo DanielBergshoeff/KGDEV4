@@ -13,7 +13,7 @@ public class CarBehaviour : MonoBehaviour
     public GameObject targetPlayerOne;
     public GameObject targetPlayerTwo;
 
-    private Rigidbody myRigidBody;
+    public Rigidbody myRigidBody;
 
     private Vector3 posLastFrame;
     private Quaternion rotLastFrame;

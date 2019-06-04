@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     public GameObject RespawnParent;
     private List<GameObject> RespawnPositions;
     private int currentRespawnPosition;
+    private float switchTimer = 10f;
 
     // Start is called before the first frame update
     void Start()
@@ -79,8 +80,13 @@ public class GameManager : MonoBehaviour
     {
         if (gameTimer < 0.0f || gameStarted) {
             if (isServer) {
-                if (gameTimer > 0f && gameTimer % 10.0f > 9.9f && (gameTimer + Time.deltaTime) % 10.0f < 0.1f)
-                    SwitchRoles();
+                if (gameStarted) {
+                    switchTimer -= Time.deltaTime;
+                    if(switchTimer <= 0f) {
+                        SwitchRoles();
+                        switchTimer = 10f;
+                    }
+                }
             }
 
             gameTimer += Time.deltaTime;
@@ -98,6 +104,9 @@ public class GameManager : MonoBehaviour
     public void RespawnCar() {
         Car.transform.position = RespawnPositions[currentRespawnPosition].transform.position;
         Car.transform.rotation = Quaternion.identity;
+        carBehaviour.myRigidBody.velocity = Vector3.zero;
+        carBehaviour.myRigidBody.angularVelocity = Vector3.zero;
+        switchTimer = 0f;
     }
 
     public void SwitchRoles() {

@@ -321,6 +321,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -393,6 +394,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 47.654003, y: -82.801, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 229f6ba07f155d94ab4884df0a0ede5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  axes: 0
+  sensitivityX: 2
+  sensitivityY: 2
+  minimumX: -360
+  maximumX: 360
+  minimumY: -60
+  maximumY: 60
 --- !u!1 &996449966 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2667953316130336370, guid: 6d06af1c5710f2e4385ac92257b3c210,
@@ -660,6 +680,14 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547372996, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
+      propertyPath: sensitivityX
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547372996, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
+      propertyPath: sensitivityY
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
