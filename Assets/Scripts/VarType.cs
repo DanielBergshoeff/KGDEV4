@@ -21,6 +21,7 @@ public enum SendType {
     StartGame,
     WonGame,
     DriveTurn,
+    EggHit,
 
     //Client 1 to Server
     MoveForward,

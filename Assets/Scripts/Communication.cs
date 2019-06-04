@@ -22,6 +22,7 @@ public static class Communication {
         { SendType.StartGame, VarType.Float },
         { SendType.WonGame, VarType.Bool },
         { SendType.DriveTurn, VarType.Bool },
+        { SendType.EggHit, VarType.Bool },
 
         //Client to Server
         { SendType.MoveForward, VarType.Bool },

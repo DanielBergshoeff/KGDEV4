@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     private CarBehaviour carBehaviour;
     public bool gameStarted = false;
     private float gameTimer = 0.0f;
+    private float blindTime = 3.0f;
+    public GameObject blindText;
 
     //Client
     [Header("Client")]
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject WinCanvas;
     public GameObject LossCanvas;
+    public GameObject BlindPanel;
 
     public UserInfo userInfo;
     public bool sentSessionId;
@@ -280,10 +283,10 @@ public class GameManager : MonoBehaviour
         }
         else { //ON CLIENT
             switch (sendType) {
-                case SendType.CarPosition:
+                case SendType.CarPosition: //If the Car Position has been received, set the Car position to value
                     Car.transform.position = (Vector3)o;
                     break;
-                case SendType.AssignId:
+                case SendType.AssignId: //If an Id has been assigned by the server, set Id to value and enable one of the cameras, depending on Id
                     myId = (int)o;
                     if(myId == 0) {
                         carBehaviour.camPlayerOne.gameObject.SetActive(true);
@@ -292,21 +295,21 @@ public class GameManager : MonoBehaviour
                         carBehaviour.camPlayerTwo.gameObject.SetActive(true);
                     }
                     break;
-                case SendType.CarRotation:
+                case SendType.CarRotation: //If the Car Rotation has been received, set the Car rotation to value
                     Car.transform.rotation = (Quaternion)o;
                     break;
-                case SendType.StartGame:
+                case SendType.StartGame: //If the Start Game float has been received, set a timer for value amount of seconds until game start
                     Invoke("StartGame", (float)o);
                     gameTimer = -(float)o;
                     break;
-                case SendType.WonGame:
+                case SendType.WonGame: //If the Won Game bool has been received, activate either the win or loss canvas depending on value
                     if ((bool)o)
                         WinCanvas.SetActive(true);
                     else
                         LossCanvas.SetActive(true);
                     gameStarted = false;
                     break;
-                case SendType.DriveTurn:
+                case SendType.DriveTurn: //If the Drive Turn bool has been received, activate either the forward or backward camera depending on value and id
                     driveTurn = (bool)o;
                     if (myId == 0) {
                         if (driveTurn) {
@@ -327,6 +330,16 @@ public class GameManager : MonoBehaviour
                             carBehaviour.camPlayerTwoBackwards.gameObject.SetActive(true);
                             carBehaviour.camPlayerTwo.gameObject.SetActive(false);
                         }
+                    }
+                    break;
+                case SendType.EggHit: //If the Egg Hit bool has been received, either blind player or visually show the other player has been blinded depending on value
+                    if ((bool)o) {
+                        BlindPanel.SetActive(true);
+                        Invoke("Unblind", blindTime);
+                    }
+                    else {
+                        blindText.SetActive(true);
+                        Invoke("RemoveBlindText", blindTime);
                     }
                     break;
             }
@@ -359,6 +372,14 @@ public class GameManager : MonoBehaviour
         else { //ON CLIENT
 
         }
+    }
+
+    public void UnBlind() {
+        BlindPanel.SetActive(false);
+    }
+
+    public void RemoveBlindText() {
+        blindText.SetActive(false);
     }
 
     public void PlayerWin(UserConnection conn) {

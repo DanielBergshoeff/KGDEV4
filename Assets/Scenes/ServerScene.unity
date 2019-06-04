@@ -153,14 +153,14 @@ RectTransform:
   m_GameObject: {fileID: 147373145}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.08899723, y: 0.08899723, z: 0.08899723}
+  m_LocalScale: {x: 0.0623301, y: 0.0623301, z: 0.0623301}
   m_Children: []
   m_Father: {fileID: 637050522}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 325, y: 175}
+  m_AnchoredPosition: {x: 342, y: 175}
   m_SizeDelta: {x: 16000, y: 3000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &147373147
@@ -484,6 +484,7 @@ MonoBehaviour:
   loginCanvas: {fileID: 0}
   WinCanvas: {fileID: 0}
   LossCanvas: {fileID: 0}
+  BlindPanel: {fileID: 0}
   sentSessionId: 0
   EggPrefab: {fileID: 7743584191008373197, guid: 7cf104d23231d9a4fb6394ba6c74cee9,
     type: 3}
