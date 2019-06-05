@@ -36,6 +36,9 @@ public class GameManager : MonoBehaviour
     public GameObject LossCanvas;
     public GameObject BlindPanel;
 
+    public GameObject triggerPlayerOne;
+    public GameObject triggerPlayerTwo;
+
     public UserInfo userInfo;
     public bool sentSessionId;
 

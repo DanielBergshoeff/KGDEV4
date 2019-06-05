@@ -679,12 +679,15 @@ MonoBehaviour:
   localIsServer: 0
   GameTimerText: {fileID: 2040720217}
   gameStarted: 0
+  blindText: {fileID: 756440954}
   TextUsername: {fileID: 1418373976}
   TextPassword: {fileID: 582100241}
   loginCanvas: {fileID: 378577917}
   WinCanvas: {fileID: 13783756}
   LossCanvas: {fileID: 1396601424}
-  BlindPanel: {fileID: 0}
+  BlindPanel: {fileID: 1032453809}
+  triggerPlayerOne: {fileID: 1547372995}
+  triggerPlayerTwo: {fileID: 1547372994}
   sentSessionId: 0
   EggPrefab: {fileID: 0}
   RespawnParent: {fileID: 0}
@@ -705,7 +708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &756440955
 RectTransform:
   m_ObjectHideFlags: 0
@@ -932,7 +935,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1032453810
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1545,6 +1548,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
+--- !u!1 &1547372994 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2653732488084220038, guid: 7b3025ada2d2b234ea555e3426a20707,
+    type: 3}
+  m_PrefabInstance: {fileID: 1547372993}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1547372995 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1800928548414814467, guid: 7b3025ada2d2b234ea555e3426a20707,
+    type: 3}
+  m_PrefabInstance: {fileID: 1547372993}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1695144581
 GameObject:
   m_ObjectHideFlags: 0

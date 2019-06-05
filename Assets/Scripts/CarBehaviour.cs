@@ -13,9 +13,6 @@ public class CarBehaviour : MonoBehaviour
     public GameObject targetPlayerOne;
     public GameObject targetPlayerTwo;
 
-    public GameObject triggerPlayerOne;
-    public GameObject triggerPlayerTwo;
-
     public Rigidbody myRigidBody;
 
     private Vector3 posLastFrame;
@@ -82,10 +79,6 @@ public class CarBehaviour : MonoBehaviour
         }
         else if (other.CompareTag("RespawnPosition")) {
             GameManager.Instance.TouchRespawnPosition(other.gameObject);
-        }
-        else if (other.CompareTag("Player")) {
-            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.EggHit, other.gameObject == triggerPlayerOne), ServerBehaviour.GetConnectionByPlayerNr(0));
-            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.EggHit, !other.gameObject == triggerPlayerOne), ServerBehaviour.GetConnectionByPlayerNr(1));
         }
     }
 
