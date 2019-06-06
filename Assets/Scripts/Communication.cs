@@ -5,6 +5,8 @@ using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Text;
+using static MenuBehaviour;
+using UnityEngine.Networking;
 
 public static class Communication {
     public static UnityObjectEvent receivedObject;
@@ -266,6 +268,42 @@ public static class Communication {
         }
 
         return o;
+    }
+
+    public static IEnumerator GetRequest(string url, System.Action<string> callBack) {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = url.Split('/');
+            int page = pages.Length - 1;
+
+            if (webRequest.isNetworkError) {
+                Debug.Log(pages[page] + ": Error: " + webRequest.error);
+            }
+            else {
+                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                callBack(webRequest.downloadHandler.text);
+            }
+        }
+    }
+
+    public static IEnumerator SetRequest(string url) {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = url.Split('/');
+            int page = pages.Length - 1;
+
+            if (webRequest.isNetworkError) {
+                Debug.Log(pages[page] + ": Error: " + webRequest.error);
+            }
+            else {
+                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                //UncodeSet(webRequest.downloadHandler.text);
+            }
+        }
     }
 }
 

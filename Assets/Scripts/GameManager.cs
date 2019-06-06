@@ -27,10 +27,10 @@ public class GameManager : MonoBehaviour
     public GameObject blindText;
 
     //Client
-    [Header("Client")]
+    [Header("Client")]/*
     public UnityEngine.UI.Text TextUsername;
     public UnityEngine.UI.Text TextPassword;
-    public GameObject loginCanvas;
+    public GameObject loginCanvas;*/
 
     public GameObject WinCanvas;
     public GameObject LossCanvas;
@@ -38,8 +38,6 @@ public class GameManager : MonoBehaviour
 
     public GameObject triggerPlayerOne;
     public GameObject triggerPlayerTwo;
-
-    public UserInfo userInfo;
     public bool sentSessionId;
 
     private bool driveTurn = false;
@@ -65,11 +63,6 @@ public class GameManager : MonoBehaviour
         carBehaviour = Car.GetComponent<CarBehaviour>();
 
         playerTurn = default(NetworkConnection);
-
-        userInfo = new UserInfo();
-        userInfo.sessid = "0";
-        userInfo.username = "0";
-
         isServer = localIsServer;
 
         if (!isServer)
@@ -132,6 +125,7 @@ public class GameManager : MonoBehaviour
         gameStarted = true;
     }
 
+    /*
     public void Login() {
         string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
         StartCoroutine(GetRequest(request));
@@ -140,13 +134,14 @@ public class GameManager : MonoBehaviour
     public void Register() {
         string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/register.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
         StartCoroutine(GetRequest(request));
-    }
+    }*/
 
-    public void SetScore(string sessionId, float time) {
+    /*public void SetScore(string sessionId, float time) {
         string setscore = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/insertscore.php?sessid=" + sessionId + "&score=" + time.ToString("F2").Replace(',', '.');
         StartCoroutine(SetScore(setscore));
-    }
+    }*/
 
+    /*
     IEnumerator GetRequest(string url) {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
             // Request and wait for the desired page.
@@ -194,22 +189,25 @@ public class GameManager : MonoBehaviour
 
     private void UncodeSet(string json) {
         //int i = JsonUtility.FromJson<int>(json);
-    }
+    }*/
 
     private void ServerBehaviourMethod() {
         
     }
 
+    private void BackToMenu() {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+    }
+
     private void ClientBehaviourMethod() {
+        if (MenuBehaviour.userInfo == default(MenuBehaviour.UserInfo)) //If the player is not logged in, return to menu
+            BackToMenu();
+
         if (ClientBehaviour.Instance.m_clientToServerConnection[0] == default(NetworkConnection)) //If there's no connection, return
             return;
 
-        if (userInfo.sessid == "0") //If the player is not logged in, return
-            return;
-
         if (!sentSessionId) {
-            ClientBehaviour.SendInfo(SendType.SessionId, userInfo.sessid);
-            loginCanvas.SetActive(false);
+            ClientBehaviour.SendInfo(SendType.SessionId, MenuBehaviour.userInfo.sessid);
             sentSessionId = true;
         }
 
@@ -387,7 +385,7 @@ public class GameManager : MonoBehaviour
 
     public void PlayerWin(UserConnection conn) {
         gameStarted = false;
-        SetScore(conn.sessionid, gameTimer);
+        //SetScore(conn.sessionid, gameTimer);
     }
 
     public void TouchRespawnPosition(GameObject go) {
@@ -397,7 +395,4 @@ public class GameManager : MonoBehaviour
     }
 }
 
-public class UserInfo {
-    public string sessid;
-    public string username;
-}
+
