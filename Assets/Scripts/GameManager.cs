@@ -27,11 +27,7 @@ public class GameManager : MonoBehaviour
     public GameObject blindText;
 
     //Client
-    [Header("Client")]/*
-    public UnityEngine.UI.Text TextUsername;
-    public UnityEngine.UI.Text TextPassword;
-    public GameObject loginCanvas;*/
-
+    [Header("Client")]
     public GameObject WinCanvas;
     public GameObject LossCanvas;
     public GameObject BlindPanel;
@@ -40,6 +36,7 @@ public class GameManager : MonoBehaviour
     public GameObject triggerPlayerTwo;
     public bool sentSessionId;
 
+    public GameObject PreGameCamera;
     private bool driveTurn = false;
 
     //Server
@@ -203,7 +200,7 @@ public class GameManager : MonoBehaviour
         if (MenuBehaviour.userInfo == default(MenuBehaviour.UserInfo)) //If the player is not logged in, return to menu
             BackToMenu();
 
-        if (ClientBehaviour.Instance.m_clientToServerConnection[0] == default(NetworkConnection)) //If there's no connection, return
+        if (!ClientBehaviour.Instance.clientToServerConnectionMade) //If there's no connection, return
             return;
 
         if (!sentSessionId) {
@@ -289,12 +286,6 @@ public class GameManager : MonoBehaviour
                     break;
                 case SendType.AssignId: //If an Id has been assigned by the server, set Id to value and enable one of the cameras, depending on Id
                     myId = (int)o;
-                    if(myId == 0) {
-                        carBehaviour.camPlayerOne.gameObject.SetActive(true);
-                    }
-                    else if(myId == 1) {
-                        carBehaviour.camPlayerTwo.gameObject.SetActive(true);
-                    }
                     break;
                 case SendType.CarRotation: //If the Car Rotation has been received, set the Car rotation to value
                     Car.transform.rotation = (Quaternion)o;
@@ -302,6 +293,13 @@ public class GameManager : MonoBehaviour
                 case SendType.StartGame: //If the Start Game float has been received, set a timer for value amount of seconds until game start
                     Invoke("StartGame", (float)o);
                     gameTimer = -(float)o;
+                    Destroy(PreGameCamera);
+                    if (myId == 0) {
+                        carBehaviour.camPlayerOne.gameObject.SetActive(true);
+                    }
+                    else if (myId == 1) {
+                        carBehaviour.camPlayerTwoBackwards.gameObject.SetActive(true);
+                    }
                     break;
                 case SendType.WonGame: //If the Won Game bool has been received, activate either the win or loss canvas depending on value
                     if ((bool)o)
