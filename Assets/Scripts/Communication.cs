@@ -270,7 +270,7 @@ public static class Communication {
         return o;
     }
 
-    public static IEnumerator GetRequest(string url, System.Action<string> callBack) {
+    public static IEnumerator GetRequest(string url, System.Action<string> callBack = null) {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
@@ -283,25 +283,7 @@ public static class Communication {
             }
             else {
                 Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                callBack(webRequest.downloadHandler.text);
-            }
-        }
-    }
-
-    public static IEnumerator SetRequest(string url) {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
-            // Request and wait for the desired page.
-            yield return webRequest.SendWebRequest();
-
-            string[] pages = url.Split('/');
-            int page = pages.Length - 1;
-
-            if (webRequest.isNetworkError) {
-                Debug.Log(pages[page] + ": Error: " + webRequest.error);
-            }
-            else {
-                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                //UncodeSet(webRequest.downloadHandler.text);
+                callBack?.Invoke(webRequest.downloadHandler.text);
             }
         }
     }

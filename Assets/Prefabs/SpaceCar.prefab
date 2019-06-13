@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 426727782048858911}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 3.5, z: 3}
+  m_LocalPosition: {x: 0, y: 3.5, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 914379019243850645}
@@ -130,7 +130,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 610341639392495889}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.5, z: -3}
+  m_LocalPosition: {x: 0, y: 3.5, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 914379019243850645}
@@ -265,8 +265,6 @@ MonoBehaviour:
   camPlayerTwoBackwards: {fileID: 7695598824585267218}
   targetPlayerOne: {fileID: 426727782048858911}
   targetPlayerTwo: {fileID: 610341639392495889}
-  triggerPlayerOne: {fileID: 1800928548414814467}
-  triggerPlayerTwo: {fileID: 2653732488084220038}
   myRigidBody: {fileID: 0}
 --- !u!54 &914379019243850644
 Rigidbody:
@@ -639,6 +637,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 914379019243850645}
     m_Modifications:
+    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
+      propertyPath: m_Name
+      value: Edge_3 (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 4516157433285186, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -683,10 +685,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
-      propertyPath: m_Name
-      value: Edge_3 (1)
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
 --- !u!4 &909882930234409236 stripped
@@ -702,6 +700,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 914379019243850645}
     m_Modifications:
+    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
+      propertyPath: m_Name
+      value: Edge_3
+      objectReference: {fileID: 0}
     - target: {fileID: 4516157433285186, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -745,10 +747,6 @@ PrefabInstance:
     - target: {fileID: 4516157433285186, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1861626179188748, guid: f7120dd567de61046942a49d08b17fb2, type: 3}
-      propertyPath: m_Name
-      value: Edge_3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7120dd567de61046942a49d08b17fb2, type: 3}

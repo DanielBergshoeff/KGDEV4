@@ -479,13 +479,14 @@ MonoBehaviour:
   localIsServer: 1
   GameTimerText: {fileID: 147373147}
   gameStarted: 0
-  TextUsername: {fileID: 0}
-  TextPassword: {fileID: 0}
-  loginCanvas: {fileID: 0}
+  blindText: {fileID: 0}
   WinCanvas: {fileID: 0}
   LossCanvas: {fileID: 0}
   BlindPanel: {fileID: 0}
+  triggerPlayerOne: {fileID: 0}
+  triggerPlayerTwo: {fileID: 0}
   sentSessionId: 0
+  PreGameCamera: {fileID: 0}
   EggPrefab: {fileID: 7743584191008373197, guid: 7cf104d23231d9a4fb6394ba6c74cee9,
     type: 3}
   RespawnParent: {fileID: 332065618364909051}
@@ -672,6 +673,14 @@ PrefabInstance:
       propertyPath: targetPlayerTwo
       value: 
       objectReference: {fileID: 102024325}
+    - target: {fileID: 1547372996, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
+      propertyPath: sensitivityX
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547372996, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
+      propertyPath: sensitivityY
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2022872545219360246, guid: 7b3025ada2d2b234ea555e3426a20707,
         type: 3}
       propertyPath: m_IsActive
@@ -681,14 +690,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1547372996, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
-      propertyPath: sensitivityX
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1547372996, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
-      propertyPath: sensitivityY
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}

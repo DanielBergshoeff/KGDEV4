@@ -95,6 +95,15 @@ public class GameManager : MonoBehaviour
         else {
             ClientBehaviourMethod();
         }
+
+        if (Input.GetKeyDown(KeyCode.P)) {
+            Vector3 posToThrowFrom = Vector3.zero;
+            Vector3 eggDirection = (-transform.forward + transform.up).normalized;
+            float eggForce = 500.0f;
+            posToThrowFrom = carBehaviour.camPlayerOneBackwards.transform.position;
+            GameObject egg = Instantiate(EggPrefab, posToThrowFrom, Quaternion.identity);
+            egg.GetComponent<Rigidbody>().AddForce(eggDirection * eggForce);
+        }
     }
 
     public void RespawnCar() {
@@ -121,79 +130,21 @@ public class GameManager : MonoBehaviour
     public void StartGame() {
         gameStarted = true;
     }
+    
 
-    /*
-    public void Login() {
-        string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
-        StartCoroutine(GetRequest(request));
-    }
-
-    public void Register() {
-        string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/register.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
-        StartCoroutine(GetRequest(request));
-    }*/
-
-    /*public void SetScore(string sessionId, float time) {
+    public void SetScore(string sessionId, float time) {
         string setscore = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/insertscore.php?sessid=" + sessionId + "&score=" + time.ToString("F2").Replace(',', '.');
-        StartCoroutine(SetScore(setscore));
-    }*/
-
-    /*
-    IEnumerator GetRequest(string url) {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
-            // Request and wait for the desired page.
-            yield return webRequest.SendWebRequest();
-
-            string[] pages = url.Split('/');
-            int page = pages.Length - 1;
-
-            if (webRequest.isNetworkError) {
-                Debug.Log(pages[page] + ": Error: " + webRequest.error);
-            }
-            else {
-                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                Uncode(webRequest.downloadHandler.text);
-            }
-        }
+        StartCoroutine(Communication.GetRequest(setscore));
     }
 
-    IEnumerator SetScore(string url) {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
-            // Request and wait for the desired page.
-            yield return webRequest.SendWebRequest();
-
-            string[] pages = url.Split('/');
-            int page = pages.Length - 1;
-
-            if (webRequest.isNetworkError) {
-                Debug.Log(pages[page] + ": Error: " + webRequest.error);
-            }
-            else {
-                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                //UncodeSet(webRequest.downloadHandler.text);
-            }
-        }
-    }
-
-    private void Uncode(string json) {
-        UserInfo ui = JsonUtility.FromJson<UserInfo>(json);
-        if (ui != null) {
-            if (ui.sessid != "0") {
-                userInfo = ui;
-            }
-        }
-    }
-
-    private void UncodeSet(string json) {
-        //int i = JsonUtility.FromJson<int>(json);
-    }*/
+    
 
     private void ServerBehaviourMethod() {
         
     }
 
     private void BackToMenu() {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+        MenuBehaviour.BackToMenu();
     }
 
     private void ClientBehaviourMethod() {
@@ -230,9 +181,9 @@ public class GameManager : MonoBehaviour
             //Player Egging
             if (Input.GetMouseButtonDown(0)) {
                 if(myId == 0)
-                    ClientBehaviour.SendInfo(SendType.EggThrow, carBehaviour.camPlayerOneBackwards.transform.forward, 10.0f);
+                    ClientBehaviour.SendInfo(SendType.EggThrow, carBehaviour.camPlayerOneBackwards.transform.forward, 500.0f);
                 else
-                    ClientBehaviour.SendInfo(SendType.EggThrow, carBehaviour.camPlayerTwoBackwards.transform.forward, 10.0f);
+                    ClientBehaviour.SendInfo(SendType.EggThrow, carBehaviour.camPlayerTwoBackwards.transform.forward, 500.0f);
             }
             if (Input.GetKeyDown(KeyCode.T)) {
                 ClientBehaviour.SendInfo(SendType.Text, "This is a text test!");
@@ -307,6 +258,7 @@ public class GameManager : MonoBehaviour
                     else
                         LossCanvas.SetActive(true);
                     gameStarted = false;
+                    Invoke("BackToMenu", 5.0f);
                     break;
                 case SendType.DriveTurn: //If the Drive Turn bool has been received, activate either the forward or backward camera depending on value and id
                     driveTurn = (bool)o;
@@ -383,7 +335,7 @@ public class GameManager : MonoBehaviour
 
     public void PlayerWin(UserConnection conn) {
         gameStarted = false;
-        //SetScore(conn.sessionid, gameTimer);
+        SetScore(conn.sessionid, gameTimer);
     }
 
     public void TouchRespawnPosition(GameObject go) {

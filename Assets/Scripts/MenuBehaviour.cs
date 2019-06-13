@@ -9,14 +9,14 @@ using UnityEngine.UI;
 
 public class MenuBehaviour : MonoBehaviour
 {
-    public Text TextUsername;
-    public Text TextPassword;
+    public InputField TextUsername;
+    public InputField TextPassword;
     public Text DisplayUsername;
 
-    public Text RegisterUsername;
-    public Text RegisterPassword;
+    public InputField RegisterUsername;
+    public InputField RegisterPassword;
 
-    public Text EditPassword;
+    public InputField EditPassword;
 
     public Text TextHighscores;
 
@@ -52,6 +52,20 @@ public class MenuBehaviour : MonoBehaviour
         }
 
         SetHighScoresAllTime();
+
+        if(userInfo != null) {
+            LoggedIn.SetActive(true);
+            loggedIn = true;
+            loginCanvas.SetActive(false);
+            registerCanvas.SetActive(false);
+            DisplayUsername.text = userInfo.username.ToUpper();
+            LoginToPlayText.SetActive(false);
+            LoginButton.SetActive(false);
+        }
+    }
+
+    public static void BackToMenu() {
+        SceneManager.LoadScene("Menu");
     }
 
     public void PlayGame() {
@@ -76,7 +90,6 @@ public class MenuBehaviour : MonoBehaviour
         //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
         string request = "http://localhost/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
         StartCoroutine(Communication.GetRequest(request, (string returnedString) => {
-            Debug.Log(returnedString);
             Uncode(returnedString);
         }));
     }
@@ -89,7 +102,9 @@ public class MenuBehaviour : MonoBehaviour
                           DateTimeStyles.None, out dt)) {
             //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dt;
             string request = "http://localhost/KGDEV4/register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dt;
-            StartCoroutine(Communication.SetRequest(request));
+            StartCoroutine(Communication.GetRequest(request, (string returnedstring) => {
+                Uncode(returnedstring);
+            }));
         }
     }
 
@@ -101,7 +116,7 @@ public class MenuBehaviour : MonoBehaviour
                           DateTimeStyles.None, out dt)) {
             //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/editinformation.php?sessid="+ userInfo.sessid + "&password=" + EditPassword.text;
             string request = "http://localhost/KGDEV4/editinformation.php?sessid="+ userInfo.sessid + "&password=" + EditPassword.text;
-            StartCoroutine(Communication.SetRequest(request));
+            StartCoroutine(Communication.GetRequest(request));
         }
     }
 
@@ -159,6 +174,7 @@ public class MenuBehaviour : MonoBehaviour
                 LoggedIn.SetActive(true);
                 loggedIn = true;
                 loginCanvas.SetActive(false);
+                registerCanvas.SetActive(false);
                 DisplayUsername.text = ui.username.ToUpper();
                 LoginToPlayText.SetActive(false);
                 LoginButton.SetActive(false);
