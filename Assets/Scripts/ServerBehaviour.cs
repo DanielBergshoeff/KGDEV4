@@ -22,11 +22,13 @@ public class ServerBehaviour : MonoBehaviour
         Instance = this;
 
         m_ServerDriver = new UdpCNetworkDriver(new INetworkParameter[0]);
-        if (m_ServerDriver.Bind(NetworkEndPoint.Parse("0.0.0.0", 9000)) != 0)
+        if (m_ServerDriver.Bind(NetworkEndPoint.Parse("192.168.1.16", 9000)) != 0)
             Debug.Log("Failed to bind to port ...");
-        else
+        else {
             m_ServerDriver.Listen();
+            Debug.Log("Server created!");
 
+        }
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
 
         /*
