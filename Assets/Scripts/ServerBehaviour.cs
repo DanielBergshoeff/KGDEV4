@@ -4,12 +4,14 @@ using Unity.Networking.Transport;
 using Unity.Collections;
 using System.Collections.Generic;
 using Unity.Jobs;
+using UdpCNetworkDriver = Unity.Networking.Transport.UdpNetworkDriver;
+
 
 public class ServerBehaviour : MonoBehaviour
 {
     public static ServerBehaviour Instance;
 
-    public UdpNetworkDriver m_ServerDriver;
+    public UdpCNetworkDriver m_ServerDriver;
     private NativeList<NetworkConnection> m_Connections;
 
     private int amtOfPlayers;
@@ -19,6 +21,15 @@ public class ServerBehaviour : MonoBehaviour
     void Start() {
         Instance = this;
 
+        m_ServerDriver = new UdpCNetworkDriver(new INetworkParameter[0]);
+        if (m_ServerDriver.Bind(NetworkEndPoint.Parse("0.0.0.0", 9000)) != 0)
+            Debug.Log("Failed to bind to port ...");
+        else
+            m_ServerDriver.Listen();
+
+        m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
+
+        /*
         ushort serverPort = 9000;
         ushort newPort = 0;
         if (CommandLine.TryGetCommandLineArgValue("-port", out newPort))
@@ -31,12 +42,14 @@ public class ServerBehaviour : MonoBehaviour
             Debug.Log($"Failed to bind to port {serverPort}");
         else
             m_ServerDriver.Listen();
+            
 
-        amtOfPlayers = 0;
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
         connectionToUserInfo = new Dictionary<UserConnection, NetworkConnection>();
 
-        SQPDriver.ServerPort = serverPort;
+        SQPDriver.ServerPort = serverPort;  */
+
+        amtOfPlayers = 0;
     }
 
     void Update() {
