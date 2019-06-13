@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         if (gameTimer < 0.0f || gameStarted) {
             gameTimer += Time.deltaTime;

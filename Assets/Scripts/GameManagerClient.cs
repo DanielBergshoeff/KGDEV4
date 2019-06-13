@@ -16,8 +16,9 @@ public class GameManagerClient : GameManager
     private bool driveTurn = false;
 
     // Update is called once per frame
-    void Update()
+    protected new void Update()
     {
+        base.Update();
         ClientBehaviourMethod();
     }
 
