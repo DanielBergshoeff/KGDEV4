@@ -33,6 +33,7 @@ public class ClientBehaviour : MonoBehaviour {
         m_ClientDriver = new UdpNetworkDriver(new INetworkParameter[0]);
         m_clientToServerConnection = default(NetworkConnection);
 
+        ServerEndPoint = new NetworkEndPoint();
         ServerEndPoint = NetworkEndPoint.Parse("192.168.1.16", 9000);
         m_clientToServerConnection = m_ClientDriver.Connect(ServerEndPoint);
     }

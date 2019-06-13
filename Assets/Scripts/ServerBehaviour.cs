@@ -4,14 +4,13 @@ using Unity.Networking.Transport;
 using Unity.Collections;
 using System.Collections.Generic;
 using Unity.Jobs;
-using UdpCNetworkDriver = Unity.Networking.Transport.UdpNetworkDriver;
 
 
 public class ServerBehaviour : MonoBehaviour
 {
     public static ServerBehaviour Instance;
 
-    public UdpCNetworkDriver m_ServerDriver;
+    public UdpNetworkDriver m_ServerDriver;
     private NativeList<NetworkConnection> m_Connections;
 
     private int amtOfPlayers;
@@ -21,8 +20,8 @@ public class ServerBehaviour : MonoBehaviour
     void Start() {
         Instance = this;
 
-        m_ServerDriver = new UdpCNetworkDriver(new INetworkParameter[0]);
-        if (m_ServerDriver.Bind(NetworkEndPoint.Parse("192.168.1.16", 9000)) != 0)
+        m_ServerDriver = new UdpNetworkDriver(new INetworkParameter[0]);
+        if (m_ServerDriver.Bind(NetworkEndPoint.Parse("0.0.0.0", 9000)) != 0)
             Debug.Log("Failed to bind to port ...");
         else {
             m_ServerDriver.Listen();
