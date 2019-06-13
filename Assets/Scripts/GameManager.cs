@@ -89,10 +89,7 @@ public class GameManager : MonoBehaviour
             GameTimerText.text = gameTimer.ToString("F2");
         }
 
-        if(isServer) {
-            ServerBehaviourMethod();
-        }
-        else {
+        if(!isServer) {
             ClientBehaviourMethod();
         }
 
@@ -135,12 +132,6 @@ public class GameManager : MonoBehaviour
     public void SetScore(string sessionId, float time) {
         string setscore = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/insertscore.php?sessid=" + sessionId + "&score=" + time.ToString("F2").Replace(',', '.');
         StartCoroutine(Communication.GetRequest(setscore));
-    }
-
-    
-
-    private void ServerBehaviourMethod() {
-        
     }
 
     private void BackToMenu() {

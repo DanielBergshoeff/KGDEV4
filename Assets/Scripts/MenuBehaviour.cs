@@ -19,6 +19,7 @@ public class MenuBehaviour : MonoBehaviour
     public InputField EditPassword;
 
     public Text TextHighscores;
+    public Text TextGameInfo;
 
     public GameObject LoginToPlayText;
     public GameObject LoggedInAsText;
@@ -34,6 +35,7 @@ public class MenuBehaviour : MonoBehaviour
     public static UserInfo userInfo;
     private bool loggedIn = false;
     private string[] highscores;
+    private string[] gameinfo;
 
     private void Start() {
         dobyear.options.Clear();
@@ -51,7 +53,8 @@ public class MenuBehaviour : MonoBehaviour
             dobday.options.Add(new Dropdown.OptionData(i.ToString("00")));
         }
 
-        SetHighScoresAllTime();
+        GetHighscoresBy("0,0,1000");
+        GetGameInfoBy("0,0,1000");
 
         if(userInfo != null) {
             LoggedIn.SetActive(true);
@@ -94,6 +97,37 @@ public class MenuBehaviour : MonoBehaviour
         }));
     }
 
+    public void GetGameInfoBy(string daysmonthsyears) {
+        //int days, int months, int years
+        string[] splittedParams = daysmonthsyears.Split(',');
+
+        int days = int.Parse(splittedParams[0]);
+        int months = int.Parse(splittedParams[1]);
+        int years = int.Parse(splittedParams[2]);
+
+        string request = "http://localhost/KGDEV4/getgameinfo.php?daysago=" + days.ToString() + "&monthsago=" + months.ToString() + "&yearsago=" + years.ToString();
+        GetGameInfo(request);
+    }
+
+    private void GetGameInfo(string request) {
+        StartCoroutine(Communication.GetRequest(request, (String returnedstring) => {
+            if (returnedstring != "0") {
+                string jsonString = JsonHelper.FixJson(returnedstring);
+                gameinfo = JsonHelper.FromJson<string>(jsonString);
+                string s = "";
+                for (int i = 0; i < Mathf.Clamp(gameinfo.Length, 0, 20); i += 2) {
+                    s += gameinfo[i].ToUpper();
+                    s += "\t\t" + gameinfo[i + 1] + "\n";
+                }
+
+                TextGameInfo.text = s;
+            }
+            else {
+                TextGameInfo.text = "There are no games from this period!";
+            }
+        }));
+    }
+
     public void Register() {
         string dob = dobyear.options[dobyear.value].text + dobmonth.options[dobmonth.value].text + dobday.options[dobday.value].text;
         DateTime dt;
@@ -120,27 +154,15 @@ public class MenuBehaviour : MonoBehaviour
         }
     }
 
-    public void SetHighScoresLastYear() {
-        GetHighscoresBy(0, 0, 1);
-    }
+    public void GetHighscoresBy(string daysmonthsyears) {
+        //int days, int months, int years
+        string[] splittedParams = daysmonthsyears.Split(',');
+        
+        int days = int.Parse(splittedParams[0]);
+        int months = int.Parse(splittedParams[1]);
+        int years = int.Parse(splittedParams[2]);
 
-    public void SetHighScoresLastMonth() {
-        GetHighscoresBy(0, 1, 0);
-    }
 
-    public void SetHighScoresLastWeek() {
-        GetHighscoresBy(7, 0, 0);
-    }
-
-    public void SetHighScoresLastDay() {
-        GetHighscoresBy(1, 0, 0);
-    }
-
-    public void SetHighScoresAllTime() {
-        GetHighscoresBy(0, 0, 1000);
-    }
-
-    public void GetHighscoresBy(int days, int months, int years) {
         string request = "http://localhost/KGDEV4/gethighscores.php?gameid=0&daysago=" + days.ToString() + "&monthsago=" + months.ToString() + "&yearsago=" + years.ToString();
         GetHighscores(request);
     }
