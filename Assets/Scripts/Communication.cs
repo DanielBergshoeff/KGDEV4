@@ -12,7 +12,7 @@ public static class Communication {
     public static UnityObjectEvent receivedObject;
     public static UnityObjectsEvent receivedObjects;
     //private static string server = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/";
-    private static string server = "http://localhost/KGDEV4/";
+    private static string server = "http://DANIEL-LAPTOP/KGDEV4/";
 
 
     /// <summary>
