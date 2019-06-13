@@ -66,7 +66,7 @@ public class GameManagerClient : GameManager
         }
     }
 
-    private void UnBlind() {
+    private void Unblind() {
         BlindPanel.SetActive(false);
     }
 

@@ -11,6 +11,9 @@ using UnityEngine.Networking;
 public static class Communication {
     public static UnityObjectEvent receivedObject;
     public static UnityObjectsEvent receivedObjects;
+    //private static string server = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/";
+    private static string server = "http://localhost/KGDEV4/";
+
 
     /// <summary>
     /// Dictionary containing all the SendTypes with their respective VarTypes
@@ -272,6 +275,7 @@ public static class Communication {
     }
 
     public static IEnumerator GetRequest(string url, System.Action<string> callBack = null) {
+        url = server + url;
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url)) {
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();

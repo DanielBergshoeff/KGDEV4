@@ -25,7 +25,7 @@ public class GameManagerServer : GameManager {
     }
 
     // Update is called once per frame
-    void Update() {
+    protected new void Update() {
         if (gameStarted) {
             switchTimer -= Time.deltaTime;
             if (switchTimer <= 0f) {
@@ -57,7 +57,7 @@ public class GameManagerServer : GameManager {
     }
 
     public void SetScore(string sessionId, float time) {
-        string setscore = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/insertscore.php?sessid=" + sessionId + "&score=" + time.ToString("F2").Replace(',', '.');
+        string setscore = "insertscore.php?sessid=" + sessionId + "&score=" + time.ToString("F2").Replace(',', '.');
         StartCoroutine(Communication.GetRequest(setscore));
     }
 

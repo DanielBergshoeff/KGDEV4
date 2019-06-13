@@ -91,7 +91,7 @@ public class MenuBehaviour : MonoBehaviour
 
     public void Login() {
         //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
-        string request = "http://localhost/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
+        string request = "login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
         StartCoroutine(Communication.GetRequest(request, (string returnedString) => {
             Uncode(returnedString);
         }));
@@ -105,7 +105,7 @@ public class MenuBehaviour : MonoBehaviour
         int months = int.Parse(splittedParams[1]);
         int years = int.Parse(splittedParams[2]);
 
-        string request = "http://localhost/KGDEV4/getgameinfo.php?daysago=" + days.ToString() + "&monthsago=" + months.ToString() + "&yearsago=" + years.ToString();
+        string request = "getgameinfo.php?daysago=" + days.ToString() + "&monthsago=" + months.ToString() + "&yearsago=" + years.ToString();
         GetGameInfo(request);
     }
 
@@ -135,7 +135,7 @@ public class MenuBehaviour : MonoBehaviour
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt)) {
             //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dt;
-            string request = "http://localhost/KGDEV4/register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dt;
+            string request = "register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dt;
             StartCoroutine(Communication.GetRequest(request, (string returnedstring) => {
                 Uncode(returnedstring);
             }));
@@ -149,7 +149,7 @@ public class MenuBehaviour : MonoBehaviour
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt)) {
             //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/editinformation.php?sessid="+ userInfo.sessid + "&password=" + EditPassword.text;
-            string request = "http://localhost/KGDEV4/editinformation.php?sessid="+ userInfo.sessid + "&password=" + EditPassword.text;
+            string request = "editinformation.php?sessid="+ userInfo.sessid + "&password=" + EditPassword.text;
             StartCoroutine(Communication.GetRequest(request));
         }
     }
@@ -163,7 +163,7 @@ public class MenuBehaviour : MonoBehaviour
         int years = int.Parse(splittedParams[2]);
 
 
-        string request = "http://localhost/KGDEV4/gethighscores.php?gameid=0&daysago=" + days.ToString() + "&monthsago=" + months.ToString() + "&yearsago=" + years.ToString();
+        string request = "gethighscores.php?gameid=0&daysago=" + days.ToString() + "&monthsago=" + months.ToString() + "&yearsago=" + years.ToString();
         GetHighscores(request);
     }
 
