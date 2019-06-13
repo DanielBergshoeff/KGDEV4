@@ -50,6 +50,7 @@ public class ServerBehaviour : MonoBehaviour
 
         SQPDriver.ServerPort = serverPort;  */
 
+        connectionToUserInfo = new Dictionary<UserConnection, NetworkConnection>();
         amtOfPlayers = 0;
     }
 

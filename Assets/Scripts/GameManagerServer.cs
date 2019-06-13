@@ -26,6 +26,7 @@ public class GameManagerServer : GameManager {
 
     // Update is called once per frame
     protected new void Update() {
+        base.Update();
         if (gameStarted) {
             switchTimer -= Time.deltaTime;
             if (switchTimer <= 0f) {

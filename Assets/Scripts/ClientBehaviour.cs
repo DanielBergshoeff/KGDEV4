@@ -53,18 +53,23 @@ public class ClientBehaviour : MonoBehaviour {
 
         if (ServerEndPoint.IsValid && !m_clientToServerConnection.IsCreated) {
             m_clientToServerConnection = m_ClientDriver.Connect(ServerEndPoint);
+            Debug.Log("Try to connect");
         }
 
         // If the client ui indicates we should not be sending pings but we do have a connection we close that connection
         if (!ServerEndPoint.IsValid && m_clientToServerConnection.IsCreated) {
             m_clientToServerConnection.Disconnect(m_ClientDriver);
             m_clientToServerConnection = default(NetworkConnection);
+            Debug.Log("Close connection because it's not valid");
         }
+
+        Debug.Log("Things seem fine");
 
         DataStreamReader stream;
         NetworkEvent.Type cmd;
         while ((cmd = m_clientToServerConnection.PopEvent(m_ClientDriver, out stream)) !=
             NetworkEvent.Type.Empty) {
+            Debug.Log("Package received?");
             if (cmd == NetworkEvent.Type.Connect) {
                 Debug.Log("We are now connected to the server");
                 clientToServerConnectionMade = true;
