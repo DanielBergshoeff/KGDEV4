@@ -106,8 +106,8 @@ public class ServerBehaviour : MonoBehaviour
                 //GameManager.playerTurn = connection;
             }
             else if(Instance.amtOfPlayers == 2) {
-                GameManager.playerTurn = connection;
-                GameManager.Instance.SwitchRoles();
+                GameManagerServer.playerTurn = connection;
+                ((GameManagerServer)GameManager.Instance).SwitchRoles();
 
                 SendInfo(WriteInfo(SendType.StartGame, 5.0f));
                 Instance.Invoke("StartGame", 5.0f);
@@ -124,7 +124,7 @@ public class ServerBehaviour : MonoBehaviour
         return writer;
     }
 
-    public static DataStreamWriter WriteInfo(SendType sendType, params SendTypeValue[] values) {
+    public static DataStreamWriter WriteInfo(SendType sendType, params object[] values) {
         DataStreamWriter writer = Communication.Send(sendType, values);
         return writer;
     }

@@ -66,7 +66,7 @@ public class ClientBehaviour : MonoBehaviour {
             }
             else if (cmd == NetworkEvent.Type.Disconnect) {
                 Debug.Log("Client got disconnected from server");
-                GameManager.Instance.sentSessionId = false;
+                ((GameManagerClient)GameManager.Instance).sentSessionId = false;
                 m_clientToServerConnection[0] = default(NetworkConnection);
                 clientToServerConnectionMade = false;
             }

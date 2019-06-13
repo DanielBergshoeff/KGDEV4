@@ -29,7 +29,7 @@ public class CarBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.isServer)
+        if (!(GameManager.Instance is GameManagerServer))
             return;
 
         if (ServerBehaviour.HasClients()) {
@@ -61,34 +61,34 @@ public class CarBehaviour : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (!GameManager.isServer)
+        if (!(GameManager.Instance is GameManagerServer))
             return;
 
         if (!GameManager.Instance.gameStarted)
             return;
 
         if(other.gameObject == targetPlayerOne) {
-            GameManager.Instance.PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(0));
+            ((GameManagerServer)GameManager.Instance).PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(0));
             ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, true), ServerBehaviour.GetConnectionByPlayerNr(0));
             ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, false), ServerBehaviour.GetConnectionByPlayerNr(1));
         }
         else if(other.gameObject == targetPlayerTwo) {
-            GameManager.Instance.PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(1));
+            ((GameManagerServer)GameManager.Instance).PlayerWin(ServerBehaviour.GetUserConnectionByPlayerNr(1));
             ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, true), ServerBehaviour.GetConnectionByPlayerNr(1));
             ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.WonGame, false), ServerBehaviour.GetConnectionByPlayerNr(0));
         }
         else if (other.CompareTag("RespawnPosition")) {
-            GameManager.Instance.TouchRespawnPosition(other.gameObject);
+            ((GameManagerServer)GameManager.Instance).TouchRespawnPosition(other.gameObject);
         }
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if (!GameManager.isServer)
+        if (!(GameManager.Instance is GameManagerServer))
             return;
 
         if (collision.gameObject.CompareTag("RespawnTag")) {
             myRigidBody.velocity = Vector3.zero;
-            GameManager.Instance.RespawnCar();
+            ((GameManagerServer)GameManager.Instance).RespawnCar();
         }
     }
 

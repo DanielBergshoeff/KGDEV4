@@ -472,23 +472,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1333943795}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16641d7cd36adb848a4b6ed2f1bce575, type: 3}
+  m_Script: {fileID: 11500000, guid: 389d5c461dcea8a4abd79e6075e491c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Car: {fileID: 914379020909768178}
-  localIsServer: 1
-  GameTimerText: {fileID: 147373147}
-  gameStarted: 0
-  blindText: {fileID: 0}
-  WinCanvas: {fileID: 0}
-  LossCanvas: {fileID: 0}
-  BlindPanel: {fileID: 0}
-  triggerPlayerOne: {fileID: 0}
-  triggerPlayerTwo: {fileID: 0}
-  sentSessionId: 0
-  PreGameCamera: {fileID: 0}
   EggPrefab: {fileID: 7743584191008373197, guid: 7cf104d23231d9a4fb6394ba6c74cee9,
     type: 3}
+  Car: {fileID: 914379020909768178}
+  GameTimerText: {fileID: 147373147}
+  gameStarted: 0
+  triggerPlayerOne: {fileID: 914379020909768180}
+  triggerPlayerTwo: {fileID: 914379020909768179}
   RespawnParent: {fileID: 332065618364909051}
 --- !u!1 &1838955709
 GameObject:
@@ -567,6 +560,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Level
+      objectReference: {fileID: 0}
+    - target: {fileID: 8881363779274395020, guid: 6d06af1c5710f2e4385ac92257b3c210,
+        type: 3}
+      propertyPath: m_BoundingSphereOverride.x
+      value: 8.46e-43
+      objectReference: {fileID: 0}
+    - target: {fileID: 8881363779274395020, guid: 6d06af1c5710f2e4385ac92257b3c210,
+        type: 3}
+      propertyPath: m_BoundingSphereOverride.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8881363779274395020, guid: 6d06af1c5710f2e4385ac92257b3c210,
+        type: 3}
+      propertyPath: m_BoundingSphereOverride.w
+      value: 43.229492
       objectReference: {fileID: 0}
     - target: {fileID: 332065619217588027, guid: 6d06af1c5710f2e4385ac92257b3c210,
         type: 3}
@@ -696,6 +704,18 @@ PrefabInstance:
 --- !u!1 &914379020909768178 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 914379019243850642, guid: 7b3025ada2d2b234ea555e3426a20707,
+    type: 3}
+  m_PrefabInstance: {fileID: 914379020909768177}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &914379020909768179 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2653732488084220038, guid: 7b3025ada2d2b234ea555e3426a20707,
+    type: 3}
+  m_PrefabInstance: {fileID: 914379020909768177}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &914379020909768180 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1800928548414814467, guid: 7b3025ada2d2b234ea555e3426a20707,
     type: 3}
   m_PrefabInstance: {fileID: 914379020909768177}
   m_PrefabAsset: {fileID: 0}

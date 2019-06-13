@@ -474,23 +474,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 594652280}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16641d7cd36adb848a4b6ed2f1bce575, type: 3}
+  m_Script: {fileID: 11500000, guid: 172fe4663ae5a0d44b25be01dd5bc701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EggPrefab: {fileID: 7743584191008373197, guid: 7cf104d23231d9a4fb6394ba6c74cee9,
+    type: 3}
   Car: {fileID: 502919465}
-  localIsServer: 0
   GameTimerText: {fileID: 2040720217}
   gameStarted: 0
-  blindText: {fileID: 756440954}
   WinCanvas: {fileID: 13783756}
   LossCanvas: {fileID: 1396601424}
   BlindPanel: {fileID: 1032453809}
-  triggerPlayerOne: {fileID: 1547372995}
-  triggerPlayerTwo: {fileID: 1547372994}
+  blindText: {fileID: 756440954}
   sentSessionId: 0
   PreGameCamera: {fileID: 828504271}
-  EggPrefab: {fileID: 0}
-  RespawnParent: {fileID: 0}
 --- !u!1 &756440954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,18 +1073,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b3025ada2d2b234ea555e3426a20707, type: 3}
---- !u!1 &1547372994 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2653732488084220038, guid: 7b3025ada2d2b234ea555e3426a20707,
-    type: 3}
-  m_PrefabInstance: {fileID: 1547372993}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1547372995 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1800928548414814467, guid: 7b3025ada2d2b234ea555e3426a20707,
-    type: 3}
-  m_PrefabInstance: {fileID: 1547372993}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1615546233
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,8 +6,10 @@ public class EggBehaviour : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")) {
-            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.EggHit, other.gameObject == GameManager.Instance.triggerPlayerOne), ServerBehaviour.GetConnectionByPlayerNr(0));
-            ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.EggHit, !other.gameObject == GameManager.Instance.triggerPlayerOne), ServerBehaviour.GetConnectionByPlayerNr(1));
+            if (GameManager.Instance is GameManagerServer) {
+                ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.EggHit, other.gameObject == ((GameManagerServer)GameManager.Instance).triggerPlayerOne), ServerBehaviour.GetConnectionByPlayerNr(0));
+                ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.EggHit, !(other.gameObject == ((GameManagerServer)GameManager.Instance).triggerPlayerOne)), ServerBehaviour.GetConnectionByPlayerNr(1));
+            }
         }
     }
 }

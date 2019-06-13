@@ -52,7 +52,8 @@ public static class Communication {
     /// Dictionary containing the VarTypes of SendTypes with multiple Vars
     /// </summary>
     public static readonly Dictionary<SendType, VarType[]> SendToVars = new Dictionary<SendType, VarType[]> {
-        { SendType.EggThrow, new VarType[] {VarType.Vector3, VarType.Float} }
+        { SendType.EggThrow, new VarType[] {VarType.Vector3, VarType.Float} },
+        { SendType.EggSpawn, new VarType[] {VarType.Vector3, VarType.Vector3} }
     };
 
     /// <summary>
@@ -294,7 +295,7 @@ public class UnityObjectEvent : UnityEvent<SendType, object, NetworkConnection> 
 public class UnityObjectsEvent : UnityEvent<SendType, object[], NetworkConnection> { }
 
 
-public class SendTypeValue {
-    public SendType sendType;
+public class VarTypeValue {
+    public VarType varType;
     public object value;
 }
