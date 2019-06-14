@@ -26,31 +26,32 @@ public class MenuBehaviour : MonoBehaviour
     public GameObject LoginButton;
     public GameObject LoggedIn;
 
-    public Dropdown dobyear;
-    public Dropdown dobmonth;
-    public Dropdown dobday;
+    public Dropdown DobYear;
+    public Dropdown DobMonth;
+    public Dropdown DobDay;
 
-    public GameObject loginCanvas;
-    public GameObject registerCanvas;
+    public GameObject LoginCanvas;
+    public GameObject RegisterCanvas;
     public static UserInfo userInfo;
+
     private bool loggedIn = false;
     private string[] highscores;
     private string[] gameinfo;
 
     private void Start() {
-        dobyear.options.Clear();
+        DobYear.options.Clear();
         for (int i = 2019; i > 1900; i--) {
-            dobyear.options.Add(new Dropdown.OptionData(i.ToString()));
+            DobYear.options.Add(new Dropdown.OptionData(i.ToString()));
         }
 
-        dobmonth.options.Clear();
+        DobMonth.options.Clear();
         for (int i = 1; i < 13; i++) {
-            dobmonth.options.Add(new Dropdown.OptionData(i.ToString("00")));
+            DobMonth.options.Add(new Dropdown.OptionData(i.ToString("00")));
         }
 
-        dobday.options.Clear();
+        DobDay.options.Clear();
         for (int i = 1; i < 32; i++) {
-            dobday.options.Add(new Dropdown.OptionData(i.ToString("00")));
+            DobDay.options.Add(new Dropdown.OptionData(i.ToString("00")));
         }
 
         GetHighscoresBy("0,0,1000");
@@ -59,8 +60,8 @@ public class MenuBehaviour : MonoBehaviour
         if(userInfo != null) {
             LoggedIn.SetActive(true);
             loggedIn = true;
-            loginCanvas.SetActive(false);
-            registerCanvas.SetActive(false);
+            LoginCanvas.SetActive(false);
+            RegisterCanvas.SetActive(false);
             DisplayUsername.text = userInfo.username.ToUpper();
             LoginToPlayText.SetActive(false);
             LoginButton.SetActive(false);
@@ -81,16 +82,15 @@ public class MenuBehaviour : MonoBehaviour
     }
 
     public void OpenLoginMenu() {
-        loginCanvas.SetActive(true);
+        LoginCanvas.SetActive(true);
     }
 
     public void OpenRegisterMenu() {
-        loginCanvas.SetActive(false);
-        registerCanvas.SetActive(true);
+        LoginCanvas.SetActive(false);
+        RegisterCanvas.SetActive(true);
     }
 
     public void Login() {
-        //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
         string request = "login.php?username=" + TextUsername.text + "&password=" + TextPassword.text;
         StartCoroutine(Communication.GetRequest(request, (string returnedString) => {
             Uncode(returnedString);
@@ -129,26 +129,19 @@ public class MenuBehaviour : MonoBehaviour
     }
 
     public void Register() {
-        string dob = dobyear.options[dobyear.value].text + dobmonth.options[dobmonth.value].text + dobday.options[dobday.value].text;
-        DateTime dt;
-        if (DateTime.TryParseExact(dob, "yyyyMMdd",
-                          CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt)) {
-            //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dt;
-            string request = "register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dt;
-            StartCoroutine(Communication.GetRequest(request, (string returnedstring) => {
-                Uncode(returnedstring);
-            }));
-        }
+        string dob = DobYear.options[DobYear.value].text + "-" + DobMonth.options[DobMonth.value].text + "-" + DobDay.options[DobDay.value].text;
+        string request = "register.php?username=" + RegisterUsername.text + "&password=" + RegisterPassword.text + "&date_of_birth=" + dob;
+        StartCoroutine(Communication.GetRequest(request, (string returnedstring) => {
+            Uncode(returnedstring);
+        }));
     }
 
     public void Edit() {
-        string dob = dobyear.options[dobyear.value].text + dobmonth.options[dobmonth.value].text + dobday.options[dobday.value].text;
+        string dob = DobYear.options[DobYear.value].text + DobMonth.options[DobMonth.value].text + DobDay.options[DobDay.value].text;
         DateTime dt;
         if (DateTime.TryParseExact(dob, "yyyyMMdd",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt)) {
-            //string request = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/editinformation.php?sessid="+ userInfo.sessid + "&password=" + EditPassword.text;
             string request = "editinformation.php?sessid="+ userInfo.sessid + "&password=" + EditPassword.text;
             StartCoroutine(Communication.GetRequest(request));
         }
@@ -195,8 +188,8 @@ public class MenuBehaviour : MonoBehaviour
                 userInfo = ui;
                 LoggedIn.SetActive(true);
                 loggedIn = true;
-                loginCanvas.SetActive(false);
-                registerCanvas.SetActive(false);
+                LoginCanvas.SetActive(false);
+                RegisterCanvas.SetActive(false);
                 DisplayUsername.text = ui.username.ToUpper();
                 LoginToPlayText.SetActive(false);
                 LoginButton.SetActive(false);

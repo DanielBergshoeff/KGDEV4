@@ -26,7 +26,7 @@ public class GameManagerClient : GameManager
         if (MenuBehaviour.userInfo == default(MenuBehaviour.UserInfo)) //If the player is not logged in, return to menu
             BackToMenu();
 
-        if (!ClientBehaviour.Instance.clientToServerConnectionMade) //If there's no connection, return
+        if (!ClientBehaviour.Instance.ClientToServerConnectionMade) //If there's no connection, return
             return;
 
         if (!sentSessionId) {

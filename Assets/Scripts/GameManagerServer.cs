@@ -6,20 +6,20 @@ using UnityEngine;
 public class GameManagerServer : GameManager {
     public static NetworkConnection playerTurn;
 
-    public GameObject triggerPlayerOne;
-    public GameObject triggerPlayerTwo;
-
+    public GameObject TriggerPlayerOne;
+    public GameObject TriggerPlayerTwo;
     public GameObject RespawnParent;
-    private List<GameObject> RespawnPositions;
+
+    private List<GameObject> respawnPositions;
     private int currentRespawnPosition;
     private float switchTimer = 10f;
 
     // Start is called before the first frame update
     new void Start() {
         base.Start();
-        RespawnPositions = new List<GameObject>();
+        respawnPositions = new List<GameObject>();
         for (int i = 0; i < RespawnParent.transform.childCount; i++) {
-            RespawnPositions.Add(RespawnParent.transform.GetChild(i).gameObject);
+            respawnPositions.Add(RespawnParent.transform.GetChild(i).gameObject);
         }
         playerTurn = default(NetworkConnection);
     }
@@ -37,7 +37,7 @@ public class GameManagerServer : GameManager {
     }
 
     public void RespawnCar() {
-        Car.transform.position = RespawnPositions[currentRespawnPosition].transform.position;
+        Car.transform.position = respawnPositions[currentRespawnPosition].transform.position;
         Car.transform.rotation = Quaternion.identity;
         carBehaviour.myRigidBody.velocity = Vector3.zero;
         carBehaviour.myRigidBody.angularVelocity = Vector3.zero;
@@ -46,7 +46,7 @@ public class GameManagerServer : GameManager {
 
     public void SwitchRoles() {
         int tempPlayerTurn = playerTurn.InternalId;
-        foreach (NetworkConnection nc in ServerBehaviour.Instance.connectionToUserInfo.Values) {
+        foreach (NetworkConnection nc in ServerBehaviour.Instance.ConnectionToUserInfo.Values) {
             if (nc.InternalId == tempPlayerTurn) {
                 ServerBehaviour.SendInfo(ServerBehaviour.WriteInfo(SendType.DriveTurn, false), nc);
             }
@@ -68,8 +68,8 @@ public class GameManagerServer : GameManager {
     }
 
     public void TouchRespawnPosition(GameObject go) {
-        if (RespawnPositions.Contains(go)) {
-            currentRespawnPosition = RespawnPositions.IndexOf(go);
+        if (respawnPositions.Contains(go)) {
+            currentRespawnPosition = respawnPositions.IndexOf(go);
         }
     }
 
@@ -122,7 +122,7 @@ public class GameManagerServer : GameManager {
                     Vector3 posToThrowFrom = Vector3.zero;
                     Vector3 eggDirection = (Vector3)values[0];
                     float eggForce = (float)values[1];
-                    if (ServerBehaviour.KeyByValue(ServerBehaviour.Instance.connectionToUserInfo, connection).connection == 0) {
+                    if (ServerBehaviour.KeyByValue(ServerBehaviour.Instance.ConnectionToUserInfo, connection).connection == 0) {
                         posToThrowFrom = carBehaviour.camPlayerOneBackwards.transform.position;
                     }
                     else {

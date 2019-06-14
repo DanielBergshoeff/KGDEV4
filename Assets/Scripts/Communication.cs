@@ -11,8 +11,7 @@ using UnityEngine.Networking;
 public static class Communication {
     public static UnityObjectEvent receivedObject;
     public static UnityObjectsEvent receivedObjects;
-    //private static string server = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/";
-    private static string server = "http://DANIEL-LAPTOP/KGDEV4/";
+    private static string server = "https://studenthome.hku.nl/~daniel.bergshoeff/KGDEV4/";
 
 
     /// <summary>
@@ -65,7 +64,7 @@ public static class Communication {
     /// <param name="sendType"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static DataStreamWriter Send(SendType sendType, object value) {
+    public static DataStreamWriter Write(SendType sendType, object value) {
         DataStreamWriter writer = default(DataStreamWriter);
         int dataCost = 0;
 
@@ -82,7 +81,7 @@ public static class Communication {
         writer = new DataStreamWriter(dataCost, Allocator.Temp);
         writer.Write((uint)sendType);
 
-        SendValue(SendToVar[sendType], value, ref writer);
+        WriteValue(SendToVar[sendType], value, ref writer);
         return writer;
     }
 
@@ -92,7 +91,7 @@ public static class Communication {
     /// <param name="sendType"></param>
     /// <param name="values"></param>
     /// <returns></returns>
-    public static DataStreamWriter Send(SendType sendType, params object[] values) {
+    public static DataStreamWriter Write(SendType sendType, params object[] values) {
         DataStreamWriter writer = default(DataStreamWriter);
 
         if (values.Length != SendToVars[sendType].Length)
@@ -109,7 +108,7 @@ public static class Communication {
         writer.Write((uint)sendType);
 
         for (int i = 0; i < values.Length; i++) {
-            SendValue(SendToVars[sendType][i], values[i], ref writer);
+            WriteValue(SendToVars[sendType][i], values[i], ref writer);
         }
 
         return writer;
@@ -122,30 +121,30 @@ public static class Communication {
     /// <param name="varType"></param>
     /// <param name="value"></param>
     /// <param name="writer"></param>
-    private static void SendValue(VarType varType, object value, ref DataStreamWriter writer) {
+    private static void WriteValue(VarType varType, object value, ref DataStreamWriter writer) {
         switch (varType) {
             case VarType.Float:
-                SendFloat((float)value, ref writer);
+                WriteFloat((float)value, ref writer);
                 break;
 
             case VarType.Vector3:
-                SendVector3((Vector3)value, ref writer);
+                WriteVector3((Vector3)value, ref writer);
                 break;
 
             case VarType.Int:
-                SendInt((int)value, ref writer);
+                WriteInt((int)value, ref writer);
                 break;
 
             case VarType.Bool:
-                SendBool((bool)value, ref writer);
+                WriteBool((bool)value, ref writer);
                 break;
 
             case VarType.Quaternion:
-                SendQuaternion((Quaternion)value, ref writer);
+                WriteQuaternion((Quaternion)value, ref writer);
                 break;
 
             case VarType.String:
-                SendString((string)value, ref writer);
+                WriteString((string)value, ref writer);
                 break;
         }
     }
@@ -155,7 +154,7 @@ public static class Communication {
     /// </summary>
     /// <param name="value"></param>
     /// <param name="writer"></param>
-    private static void SendString(string value, ref DataStreamWriter writer) {
+    private static void WriteString(string value, ref DataStreamWriter writer) {
         byte[] bytes = Encoding.ASCII.GetBytes(value);
         writer.Write(bytes.Length);
         writer.Write(bytes);
@@ -166,7 +165,7 @@ public static class Communication {
     /// </summary>
     /// <param name="vector"></param>
     /// <param name="writer"></param>
-    private static void SendVector3( Vector3 vector, ref DataStreamWriter writer) {
+    private static void WriteVector3( Vector3 vector, ref DataStreamWriter writer) {
         writer.Write(vector.x);
         writer.Write(vector.y);
         writer.Write(vector.z);
@@ -177,7 +176,7 @@ public static class Communication {
     /// </summary>
     /// <param name="quaternion"></param>
     /// <param name="writer"></param>
-    private static void SendQuaternion(Quaternion quaternion, ref DataStreamWriter writer) {
+    private static void WriteQuaternion(Quaternion quaternion, ref DataStreamWriter writer) {
         writer.Write(quaternion.x);
         writer.Write(quaternion.y);
         writer.Write(quaternion.z);
@@ -189,7 +188,7 @@ public static class Communication {
     /// </summary>
     /// <param name="f"></param>
     /// <param name="writer"></param>
-    private static void SendFloat (float f, ref DataStreamWriter writer) {
+    private static void WriteFloat (float f, ref DataStreamWriter writer) {
         writer.Write(f);
     }
 
@@ -198,7 +197,7 @@ public static class Communication {
     /// </summary>
     /// <param name="i"></param>
     /// <param name="writer"></param>
-    private static void SendInt(int i, ref DataStreamWriter writer) {
+    private static void WriteInt(int i, ref DataStreamWriter writer) {
         writer.Write(i);
     }
 
@@ -207,7 +206,7 @@ public static class Communication {
     /// </summary>
     /// <param name="b"></param>
     /// <param name="writer"></param>
-    private static void SendBool(bool b, ref DataStreamWriter writer) {
+    private static void WriteBool(bool b, ref DataStreamWriter writer) {
         byte x = b ? (byte)1 : (byte)0;
         writer.Write(x);
     }
@@ -297,9 +296,3 @@ public static class Communication {
 public class UnityObjectEvent : UnityEvent<SendType, object, NetworkConnection> { }
 
 public class UnityObjectsEvent : UnityEvent<SendType, object[], NetworkConnection> { }
-
-
-public class VarTypeValue {
-    public VarType varType;
-    public object value;
-}

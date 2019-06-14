@@ -9,24 +9,23 @@ using Unity.Jobs;
 public class ServerBehaviour : MonoBehaviour
 {
     public static ServerBehaviour Instance;
+    public UdpNetworkDriver ServerDriver;
+    public Dictionary<UserConnection, NetworkConnection> ConnectionToUserInfo;
 
-    public UdpNetworkDriver m_ServerDriver;
     private NativeList<NetworkConnection> m_Connections;
-
     private int amtOfPlayers;
-    public Dictionary<UserConnection, NetworkConnection> connectionToUserInfo;
 
     // Start by creating a driver for the client and an address for the server.
     void Start() {
         Instance = this;
 
-        m_ServerDriver = new UdpNetworkDriver(new INetworkParameter[0]);
+        ServerDriver = new UdpNetworkDriver(new INetworkParameter[0]);
         var addr = NetworkEndPoint.AnyIpv4;
         addr.Port = 9000;
-        if (m_ServerDriver.Bind(addr) != 0)
+        if (ServerDriver.Bind(addr) != 0)
             Debug.Log("Failed to bind to port ...");
         else {
-            m_ServerDriver.Listen();
+            ServerDriver.Listen();
             Debug.Log("Server created!");
 
         }
@@ -34,33 +33,13 @@ public class ServerBehaviour : MonoBehaviour
 
         SQPDriver.ServerPort = 9000;
 
-        /*
-        ushort serverPort = 9000;
-        ushort newPort = 0;
-        if (CommandLine.TryGetCommandLineArgValue("-port", out newPort))
-            serverPort = newPort;
-        // Create the server driver, bind it to a port and start listening for incoming connections
-        m_ServerDriver = new UdpNetworkDriver(new INetworkParameter[0]);
-        var addr = NetworkEndPoint.AnyIpv4;
-        addr.Port = serverPort;
-        if (m_ServerDriver.Bind(addr) != 0)
-            Debug.Log($"Failed to bind to port {serverPort}");
-        else
-            m_ServerDriver.Listen();
-            
-
-        m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
-        connectionToUserInfo = new Dictionary<UserConnection, NetworkConnection>();
-
-        SQPDriver.ServerPort = serverPort;  */
-
-        connectionToUserInfo = new Dictionary<UserConnection, NetworkConnection>();
+        ConnectionToUserInfo = new Dictionary<UserConnection, NetworkConnection>();
         amtOfPlayers = 0;
     }
 
     void Update() {
 
-        m_ServerDriver.ScheduleUpdate().Complete();
+        ServerDriver.ScheduleUpdate().Complete();
 
         // Clean up connections
         for (int i = 0; i < m_Connections.Length; i++) {
@@ -73,14 +52,14 @@ public class ServerBehaviour : MonoBehaviour
         // Accept new connections
         NetworkConnection c;
         while (true) {
-            var con = m_ServerDriver.Accept();
+            var con = ServerDriver.Accept();
             if (!con.IsCreated)
                 break;
             m_Connections.Add(con);
 
             GameManager.myId++;
-            DataStreamWriter writer = Communication.Send(SendType.AssignId, GameManager.myId);
-            con.Send(m_ServerDriver, writer);
+            DataStreamWriter writer = Communication.Write(SendType.AssignId, GameManager.myId);
+            con.Send(ServerDriver, writer);
 
             Debug.Log("Accepted a connection");
         }
@@ -90,7 +69,7 @@ public class ServerBehaviour : MonoBehaviour
             if (!m_Connections[i].IsCreated)
                 continue;
             NetworkEvent.Type cmd;
-            while ((cmd = m_ServerDriver.PopEventForConnection(m_Connections[i], out stream)) !=
+            while ((cmd = ServerDriver.PopEventForConnection(m_Connections[i], out stream)) !=
                 NetworkEvent.Type.Empty) {
                 if(cmd == NetworkEvent.Type.Connect) {
 
@@ -108,20 +87,20 @@ public class ServerBehaviour : MonoBehaviour
 
     public static void SetSessionId(string sessid, NetworkConnection connection) {
         UserConnection receivedSession = null;
-        foreach(UserConnection ui in Instance.connectionToUserInfo.Keys){
+        foreach(UserConnection ui in Instance.ConnectionToUserInfo.Keys){
             if (ui.sessionid == sessid)
                 receivedSession = ui;
         }
 
         if (receivedSession != null) {
-            Instance.connectionToUserInfo[receivedSession] = connection;
+            Instance.ConnectionToUserInfo[receivedSession] = connection;
         }
         else {
             UserConnection ui = new UserConnection();
             ui.sessionid = sessid;
             ui.connection = Instance.amtOfPlayers;
 
-            Instance.connectionToUserInfo.Add(ui, connection);
+            Instance.ConnectionToUserInfo.Add(ui, connection);
             SendInfo(WriteInfo(SendType.AssignId, Instance.amtOfPlayers), connection);
             Instance.amtOfPlayers++;
             if(Instance.amtOfPlayers == 1) {
@@ -142,12 +121,12 @@ public class ServerBehaviour : MonoBehaviour
     }
 
     public static DataStreamWriter WriteInfo(SendType sendType, object value) {
-        DataStreamWriter writer = Communication.Send(sendType, value);
+        DataStreamWriter writer = Communication.Write(sendType, value);
         return writer;
     }
 
     public static DataStreamWriter WriteInfo(SendType sendType, params object[] values) {
-        DataStreamWriter writer = Communication.Send(sendType, values);
+        DataStreamWriter writer = Communication.Write(sendType, values);
         return writer;
     }
 
@@ -157,14 +136,14 @@ public class ServerBehaviour : MonoBehaviour
                 for (int i = 0; i < conn.Length; i++) {
                     if (!conn[i].IsCreated)
                         continue;
-                    conn[i].Send(Instance.m_ServerDriver, writer);
+                    conn[i].Send(Instance.ServerDriver, writer);
                 }
             }
             else {
                 for (int i = 0; i < Instance.m_Connections.Length; i++) {
                     if (!Instance.m_Connections[i].IsCreated)
                         continue;
-                    Instance.m_Connections[i].Send(Instance.m_ServerDriver, writer);
+                    Instance.m_Connections[i].Send(Instance.ServerDriver, writer);
                 }
             }
         }
@@ -173,16 +152,16 @@ public class ServerBehaviour : MonoBehaviour
     }
 
     public static NetworkConnection GetConnectionByPlayerNr(int playerNr) {
-        foreach(UserConnection uc in Instance.connectionToUserInfo.Keys) {
+        foreach(UserConnection uc in Instance.ConnectionToUserInfo.Keys) {
             if (uc.connection == playerNr)
-                return Instance.connectionToUserInfo[uc];
+                return Instance.ConnectionToUserInfo[uc];
         }
 
         return default(NetworkConnection);
     }
 
     public static UserConnection GetUserConnectionByPlayerNr(int playerNr) {
-        foreach (UserConnection uc in Instance.connectionToUserInfo.Keys) {
+        foreach (UserConnection uc in Instance.ConnectionToUserInfo.Keys) {
             if (uc.connection == playerNr)
                 return uc;
         }
@@ -191,7 +170,7 @@ public class ServerBehaviour : MonoBehaviour
     }
 
     public static int GetPlayerNrByConnection(NetworkConnection connection) {
-        UserConnection uc = KeyByValue(Instance.connectionToUserInfo, connection);
+        UserConnection uc = KeyByValue(Instance.ConnectionToUserInfo, connection);
         return uc.connection;
     }
 
@@ -200,7 +179,7 @@ public class ServerBehaviour : MonoBehaviour
     }
 
     public void OnDestroy() {
-        m_ServerDriver.Dispose();
+        ServerDriver.Dispose();
         m_Connections.Dispose();
     }
 

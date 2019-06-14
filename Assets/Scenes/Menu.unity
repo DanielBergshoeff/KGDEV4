@@ -5997,11 +5997,11 @@ MonoBehaviour:
   LoggedInAsText: {fileID: 772634498}
   LoginButton: {fileID: 495993658}
   LoggedIn: {fileID: 869182131}
-  dobyear: {fileID: 6170612485735061051}
-  dobmonth: {fileID: 368434578}
-  dobday: {fileID: 1106460160}
-  loginCanvas: {fileID: 434960111}
-  registerCanvas: {fileID: 6908200290556537514}
+  DobYear: {fileID: 6170612485735061051}
+  DobMonth: {fileID: 368434578}
+  DobDay: {fileID: 1106460160}
+  LoginCanvas: {fileID: 434960111}
+  RegisterCanvas: {fileID: 6908200290556537514}
 --- !u!1 &2110212235
 GameObject:
   m_ObjectHideFlags: 0

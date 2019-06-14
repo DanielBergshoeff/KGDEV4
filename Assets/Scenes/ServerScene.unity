@@ -480,8 +480,8 @@ MonoBehaviour:
   Car: {fileID: 914379020909768178}
   GameTimerText: {fileID: 147373147}
   gameStarted: 0
-  triggerPlayerOne: {fileID: 914379020909768180}
-  triggerPlayerTwo: {fileID: 914379020909768179}
+  TriggerPlayerOne: {fileID: 914379020909768180}
+  TriggerPlayerTwo: {fileID: 914379020909768179}
   RespawnParent: {fileID: 332065618364909051}
 --- !u!1 &1838955709
 GameObject:

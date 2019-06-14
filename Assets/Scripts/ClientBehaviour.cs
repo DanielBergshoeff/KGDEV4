@@ -8,57 +8,42 @@ using System.Net;
 public class ClientBehaviour : MonoBehaviour {
 
     public static ClientBehaviour Instance;
-
-    public UdpNetworkDriver m_ClientDriver;
-    private NetworkConnection m_clientToServerConnection;
-    public bool clientToServerConnectionMade = false;
-    private NetworkEndPoint ServerEndPoint;
-
+    public UdpNetworkDriver ClientDriver;
+    public bool ClientToServerConnectionMade = false;
     public bool Done;
+
+    private NetworkConnection m_clientToServerConnection;
+    private NetworkEndPoint serverEndPoint;
 
     void Start() {
         Instance = this;
-
-        /*
-        m_ClientDriver = new UdpNetworkDriver(new INetworkParameter[0]);
-        m_clientToServerConnection = new NativeArray<NetworkConnection>(1, Allocator.Persistent);
-        ServerEndPoint = default(NetworkEndPoint);
-
-        ushort port = 9000;
-
-        var endpoint = NetworkEndPoint.LoopbackIpv4;
-        endpoint.Port = port;
-        ServerEndPoint = endpoint;*/
-
-        m_ClientDriver = new UdpNetworkDriver(new INetworkParameter[0]);
+        ClientDriver = new UdpNetworkDriver(new INetworkParameter[0]);
         m_clientToServerConnection = default(NetworkConnection);
 
-        ServerEndPoint = new NetworkEndPoint();
-        ServerEndPoint = NetworkEndPoint.Parse("192.168.1.16", 9000);
-        m_clientToServerConnection = m_ClientDriver.Connect(ServerEndPoint);
+        serverEndPoint = new NetworkEndPoint();
+        serverEndPoint = NetworkEndPoint.Parse("192.168.1.16", 9000);
+        m_clientToServerConnection = ClientDriver.Connect(serverEndPoint);
     }
 
     public void OnDestroy() {
-        m_ClientDriver.Dispose();
-        //m_clientToServerConnection.Dispose();
-
+        ClientDriver.Dispose();
     }
 
     // Update is called once per frame
     void Update() {
-        m_ClientDriver.ScheduleUpdate().Complete();
+        ClientDriver.ScheduleUpdate().Complete();
 
         if(Done)
             return;
 
-        if (ServerEndPoint.IsValid && !m_clientToServerConnection.IsCreated) {
-            m_clientToServerConnection = m_ClientDriver.Connect(ServerEndPoint);
+        if (serverEndPoint.IsValid && !m_clientToServerConnection.IsCreated) {
+            m_clientToServerConnection = ClientDriver.Connect(serverEndPoint);
             Debug.Log("Try to connect");
         }
 
         // If the client ui indicates we should not be sending pings but we do have a connection we close that connection
-        if (!ServerEndPoint.IsValid && m_clientToServerConnection.IsCreated) {
-            m_clientToServerConnection.Disconnect(m_ClientDriver);
+        if (!serverEndPoint.IsValid && m_clientToServerConnection.IsCreated) {
+            m_clientToServerConnection.Disconnect(ClientDriver);
             m_clientToServerConnection = default(NetworkConnection);
             Debug.Log("Close connection because it's not valid");
         }
@@ -67,12 +52,12 @@ public class ClientBehaviour : MonoBehaviour {
 
         DataStreamReader stream;
         NetworkEvent.Type cmd;
-        while ((cmd = m_clientToServerConnection.PopEvent(m_ClientDriver, out stream)) !=
+        while ((cmd = m_clientToServerConnection.PopEvent(ClientDriver, out stream)) !=
             NetworkEvent.Type.Empty) {
             Debug.Log("Package received?");
             if (cmd == NetworkEvent.Type.Connect) {
                 Debug.Log("We are now connected to the server");
-                clientToServerConnectionMade = true;
+                ClientToServerConnectionMade = true;
             }
             else if (cmd == NetworkEvent.Type.Data) {
                 Communication.Receive(stream, m_clientToServerConnection);
@@ -81,23 +66,23 @@ public class ClientBehaviour : MonoBehaviour {
                 Debug.Log("Client got disconnected from server");
                 ((GameManagerClient)GameManager.Instance).sentSessionId = false;
                 m_clientToServerConnection = default(NetworkConnection);
-                clientToServerConnectionMade = false;
+                ClientToServerConnectionMade = false;
             }
         }
     }
 
     public static void SendInfo(SendType sendType, object value) {
-        DataStreamWriter writer = Communication.Send(sendType, value);
+        DataStreamWriter writer = Communication.Write(sendType, value);
         
-        Instance.m_clientToServerConnection.Send(Instance.m_ClientDriver, writer);
+        Instance.m_clientToServerConnection.Send(Instance.ClientDriver, writer);
 
         writer.Dispose();
     }
 
     public static void SendInfo(SendType sendType, params object[] values) {
-        DataStreamWriter writer = Communication.Send(sendType, values);
+        DataStreamWriter writer = Communication.Write(sendType, values);
 
-        Instance.m_clientToServerConnection.Send(Instance.m_ClientDriver, writer);
+        Instance.m_clientToServerConnection.Send(Instance.ClientDriver, writer);
 
         writer.Dispose();
     }
