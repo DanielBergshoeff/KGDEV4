@@ -72,12 +72,15 @@ public class ServerBehaviour : MonoBehaviour
 
         // Accept new connections
         NetworkConnection c;
-        while ((c = m_ServerDriver.Accept()) != default(NetworkConnection)) {
-            m_Connections.Add(c);
+        while (true) {
+            var con = m_ServerDriver.Accept();
+            if (!con.IsCreated)
+                break;
+            m_Connections.Add(con);
 
             GameManager.myId++;
             DataStreamWriter writer = Communication.Send(SendType.AssignId, GameManager.myId);
-            c.Send(m_ServerDriver, writer);
+            con.Send(m_ServerDriver, writer);
 
             Debug.Log("Accepted a connection");
         }
