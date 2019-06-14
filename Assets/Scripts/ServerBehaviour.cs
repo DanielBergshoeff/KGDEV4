@@ -21,7 +21,9 @@ public class ServerBehaviour : MonoBehaviour
         Instance = this;
 
         m_ServerDriver = new UdpNetworkDriver(new INetworkParameter[0]);
-        if (m_ServerDriver.Bind(NetworkEndPoint.Parse("0.0.0.0", 9000)) != 0)
+        var addr = NetworkEndPoint.AnyIpv4;
+        addr.Port = 9000;
+        if (m_ServerDriver.Bind(addr) != 0)
             Debug.Log("Failed to bind to port ...");
         else {
             m_ServerDriver.Listen();
@@ -29,6 +31,8 @@ public class ServerBehaviour : MonoBehaviour
 
         }
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
+
+        SQPDriver.ServerPort = 9000;
 
         /*
         ushort serverPort = 9000;
